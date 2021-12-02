@@ -1,0 +1,3 @@
+- create mysql - database
+- execute all statements from init_database.txt
+- fill all values in 'config.php'
