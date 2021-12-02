@@ -3,3 +3,14 @@
 	margin-right: auto;
 	float: none;
 }
+
+.tile {
+	border: 1px solid #ddd;
+	font-size: 22px;
+	margin: 12px;
+	padding: 30px;
+    text-align: center;
+	background-color: #1165ab;
+	color: white;
+	border-radius: 20px;
+}
