@@ -1,6 +1,9 @@
 <?php
 	require_once 'security.php';
-	//require_once "db.php";
+	require_once 'permission/classes/permissions.php';
+	require_once 'db.php';
+	$permission = new Permission();
+	$permittedModules = $permission->getPermittedModules($link, getCurrentUser());
 ?>
 <html>
 
@@ -21,23 +24,38 @@
 			</div>
 		</div>
 	</div>
-	<div class="row justify-content-center">
-		<div class="col-md-4 col-sm-12">
-			<a href="haushaltsbuch">
-				<div class="tile">Haushaltsbuch</div>
-			</a>
-		</div>
-		<div class="col-md-4 col-sm-12">
-			<a href="login.php">
-				<div class="tile">Login</div>
-			</a>
-		</div>
-		<div class="col-md-4 col-sm-12">
-			<a href="create_user.php">
-				<div class="tile">Registrierung</div>
-			</a>
-		</div>
-	</div>
+	<?php
+	if( in_array('BUDGET', $permittedModules)){
+		echo '<div class="row justify-content-center">';
+		echo '	<div class="col-md-4 col-sm-12">';
+		echo '		<a href="budget/overview.php">';
+		echo '			<div class="tile">Haushaltsbuch</div>';
+		echo '		</a>';
+		echo '	</div>';
+	}
+	if( in_array('PERMISSION_ADMIN', $permittedModules)){
+		echo '	<div class="col-md-4 col-sm-12">';
+		echo '		<a href="permission/overview.php">';
+		echo '			<div class="tile">Rechteverwaltung</div>';
+		echo '		</a>';
+		echo '	</div>';
+	}
+	
+ 	echo '	<div class="col-md-4 col-sm-12">';
+	echo '		<a href="login.php">';
+	echo '			<div class="tile">Login</div>';
+	echo '		</a>';
+	echo '	</div>'; 
+
+
+	echo '	<div class="col-md-4 col-sm-12">';
+	echo '		<a href="create_user.php">';
+	echo '			<div class="tile">Registrierung</div>';
+	echo '		</a>';
+	echo '	</div>';
+	echo '</div>';
+	
+	?>
 </div>
 </body>
 </html>

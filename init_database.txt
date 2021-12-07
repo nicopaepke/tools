@@ -1,1 +1,3 @@
 CREATE TABLE `users` ( `id` INT NOT NULL AUTO_INCREMENT, `login` VARCHAR(50) NOT NULL , `name` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`) , UNIQUE `user_unique_login` (`login`));
+CREATE TABLE `permissions` ( `id_user` INT NOT NULL , `id_right` INT NOT NULL , PRIMARY KEY (`id_user`, `id_right`));
+CREATE TABLE `rights` ( `id` INT NOT NULL AUTO_INCREMENT , `module` VARCHAR(255) NOT NULL , `name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));

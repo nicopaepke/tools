@@ -14,3 +14,16 @@
 	color: white;
 	border-radius: 20px;
 }
+
+th.rotated-col-header
+{
+  vertical-align: bottom;
+  text-align: center;
+}
+
+span.rotated-col-header
+{
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+}

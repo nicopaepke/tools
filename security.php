@@ -7,4 +7,8 @@ if(!isset($_SESSION['userid'])) {
 	exit();
 }
 
+function getCurrentUser(){
+	return $_SESSION['userid'];
+}
+
 ?>
