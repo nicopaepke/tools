@@ -40,9 +40,16 @@
 		echo '		</a>';
 		echo '	</div>';
 	}
+	if( in_array('FUEL', $permittedModules)){
+		echo '	<div class="col-md-4 col-sm-12">';
+		echo '		<a href="fuel/overview.php">';
+		echo '			<div class="tile">Kraftstoff</div>';
+		echo '		</a>';
+		echo '	</div>';
+	}
 	
  	echo '	<div class="col-md-4 col-sm-12">';
-	echo '		<a href="login.php">';
+	echo '		<a href="login.php?logout">';
 	echo '			<div class="tile">Login</div>';
 	echo '		</a>';
 	echo '	</div>'; 

@@ -11,19 +11,13 @@
 	require_once 'classes/permissions.php';
 	require_once '../db.php';
 	
-	if($_SERVER["REQUEST_METHOD"] == "POST"){
-		foreach($_POST as $key=>$value){
-			echo $key . '=>' . $value;
-		}
-	}
-	
-	
 	$permission = new Permission();
 	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'PERMISSION_ADMIN')){
 		include '../access_denied.html';
 		exit();
 	}
-				
+	
+	$user_permissions = [];
 	$module_rights = [];
 	$sql = 'SELECT module, name FROM rights';
 	if($result = mysqli_query($link, $sql)){
@@ -33,40 +27,50 @@
 			}
 			array_push( $module_rights[$row['module']], $row['name']);
 		}
-		/*foreach($module_rights as $key=>$value){
-			echo $key . '-1</br>';
-			foreach($value as $k=>$v){
-				echo $k . '-2</br>';
-				echo $v . '-3</br>';
-			}
-		}*/
+		mysqli_free_result($result);
 	}
-	$user_permissions = [];
-	$sql = 'SELECT users.id, rights.module, rights.name FROM users INNER JOIN permissions ON permissions.id_user = users.id INNER JOIN rights ON permissions.id_right = rights.id';
+	$sql = 'SELECT id, name, login FROM users';
+	$users = [];
 	if($result = mysqli_query($link, $sql)){
 		while($row = mysqli_fetch_array($result)){
-			
-			if( !array_key_exists($row['id'], $user_permissions)){
-				$user_permissions[$row['id']] = [];
-			}
-	
-			if( !array_key_exists($row['module'], $user_permissions[$row['id']])){
-				$user_permissions[$row['id']][$row['module']] = [];
-			}
-			array_push( $user_permissions[$row['id']][$row['module']], $row['name']);
-		}
-		/*foreach($user_permissions as $key=>$value){
-			echo $key . '-1</br>';
-			foreach($value as $k=>$v){
-				echo $k . '-2</br>';
-				foreach($v as $x=>$y){
-					//echo $x . '-3</br>';
-					echo $y . '-4</br>';
+			$users[$row['id']] = $row;
+			$user_permissions[$row['id']] = [];
+			foreach($module_rights as $module=>$module_names){
+				if( !array_key_exists($module, $user_permissions[$row['id']])){
+					$user_permissions[$row['id']][$module] = [];
+					foreach($module_names as $module_key=>$module_name){
+						$user_permissions[$row['id']][$module][$module_name] = false;
+					}
 				}
 			}
-		}*/
+		}
+		mysqli_free_result($result);
 	}
 	
+	$sql = 'SELECT id_user, rights.module, rights.name FROM permissions LEFT JOIN rights ON rights.id=permissions.id_right';
+	if($result = mysqli_query($link, $sql)){
+		while($row = mysqli_fetch_array($result)){
+			$user_permissions[$row['id_user']][$row['module']][$row['name']] = true;
+		}
+		mysqli_free_result($result);
+	}
+	
+	
+	if($_SERVER["REQUEST_METHOD"] == "POST"){
+		foreach($users as $user_id=>$user){
+			foreach($module_rights as $module=>$rights){
+				foreach($rights as $idx=>$right){
+					$inputkey = $user_id . '#*#' . $module . '#*#' . $right;
+					if(array_key_exists($inputkey, $_POST) && $user_permissions[$user_id][$module][$right] == false){
+						$permission->createPermission($link, $user_id, $module, $right);
+					}else if(!array_key_exists($inputkey, $_POST) && $user_permissions[$user_id][$module][$right] == true){
+						$permission->deletePermission($link, $user_id, $module, $right);
+					}
+				}
+			}
+		}
+		header("location: " . $_SERVER["PHP_SELF"]);
+	}
 ?>
 <div class='container-fluid'>
 	<div class='row justify-content-center'>
@@ -80,62 +84,47 @@
 		<div class='row-column col-md-12'>	
 		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 		<?php
-		
-		/*
-		
-			Um die Häckchen wieder zu speichern, könnte man ein Formular submitten, in dem alle gesetzten und alle nicht gesetzten felder mitgegeben werden und dann wird ein delete bzw. ein insert aufgerufen (select vorher nicht vergessen, oder alle löschen)
-		
-		*/
+
+			echo '<table class="table table-bordered table-striped">';
+			echo '<thead>';
+				echo '<tr>';
+					echo '<th>#</th>';
+					echo '<th>Name</th>';
+					echo '<th>Login</th>';
+					foreach($module_rights as $module=>$rights){						
+						echo '<th >' . $module . '</th>';
+					}
+				echo '</tr>';
+
+			echo '</thead>';
+			echo '<tbody>';
 			
-			$sql = 'SELECT id, name, login FROM users';
-			if($result = mysqli_query($link, $sql)){
-				echo '<table class="table table-bordered table-striped">';
-				echo '<thead>';
-					echo '<tr>';
-						echo '<th rowspan="2">#</th>';
-						echo '<th rowspan="2">Name</th>';
-						echo '<th rowspan="2">Login</th>';
-						foreach($module_rights as $module=>$rights){
-							echo '<th colspan="' . sizeof($rights) . '">' . $module . '</th>';
-						}
-					echo '</tr>';
-					echo '<tr>';
-						foreach($module_rights as $module=>$rights){
-							foreach( $rights as $idx=>$right){
-								echo '<th>' . $right . '</th>';
+			foreach($users as $user_id=>$user){
+				echo '<tr>';
+					echo '<td>' . $user['id'] . '</td>';
+					echo '<td>' . $user['name'] . '</td>';
+					echo '<td>' . $user['login'] . '</td>';
+					foreach($module_rights as $module=>$rights){
+						echo '<td>';
+						foreach($rights as $idx=>$right){
+							$inputkey = $user_id . '#*#' . $module . '#*#' . $right;
+							echo '<input class="permission-checkbox" name="' .  $inputkey . '" id="' . $inputkey .'" type="checkbox" ';
+							if( $user_permissions[$user_id][$module][$right] == true){
+								echo 'checked';
 							}
+							echo'><label class="permission-checkbox-label" for="' . $inputkey . '">' . $right . '</label>';
 						}
-					echo '</tr>';
-				echo '</thead>';
-				echo '<tbody>';
-				while($row = mysqli_fetch_array($result)){
-					echo '<tr>';
-						echo '<td>' . $row['id'] . '</td>';
-						echo '<td>' . $row['name'] . '</td>';
-						echo '<td>' . $row['login'] . '</td>';
-						foreach($module_rights as $module=>$rights){
-							foreach( $rights as $idx=>$right){
-								$hasRight = 'nein';
-								if( array_key_exists($row['id'], $user_permissions)){
-									if( array_key_exists($module, $user_permissions[$row['id']])){
-										if( in_array($right, $user_permissions[$row['id']][$module])){
-											$hasRight = 'ja';
-										}
-									}
-								}
-								//echo '<td>' . $hasRight . '</td>';
-								echo '<td>' . '<input name="' .  $row['id'] . '" type="text" value="' . $hasRight . '">' . '</td>';
-							}
-						}
-						
-					echo '</tr>';
-				}
-				echo '</tbody>';                            
-				echo '</table>';
-				mysqli_free_result($result);
+						echo '</td>';
+					}
+					
+				echo '</tr>';
+			}
+			echo '</tbody>';                            
+			echo '</table>';
+			if( $permission->hasPermission($link, getCurrentUser(), 'PERMISSION_ADMIN', 'EDIT')){
+				echo '<input class="btn btn-primary" type="submit" value="Save" />';
 			}
 		?>
-		<input class="btn btn-primary" type="submit" value="Save" />
 		</form>
 		</div>
 	</div>

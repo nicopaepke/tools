@@ -1,6 +1,34 @@
 <?php
 	class Permission {
 		
+		function createPermission($link, $user, $module, $right){
+			$sql = 'INSERT INTO permissions (id_user, id_right) SELECT ?, id FROM rights WHERE module = ? AND name = ?';
+			if($stmt = mysqli_prepare($link, $sql)){
+				try{
+					mysqli_stmt_bind_param($stmt, "sss", $user, $module, $right);
+					mysqli_stmt_execute($stmt);
+				} finally {
+					mysqli_stmt_close($stmt);
+				}
+			} else{
+				echo mysqli_error($link);
+			}
+		}
+		
+		function deletePermission($link, $user, $module, $right){
+			$sql = 'DELETE FROM permissions WHERE id_user = ? AND id_right = (SELECT id FROM rights WHERE module = ? AND name = ?)';
+			if($stmt = mysqli_prepare($link, $sql)){
+				try{
+					mysqli_stmt_bind_param($stmt, "sss", $user, $module, $right);
+					mysqli_stmt_execute($stmt);
+				} finally {
+					mysqli_stmt_close($stmt);
+				}
+			} else{
+				echo mysqli_error($link);
+			}
+		}
+		
 		function hasPermission($link, $user, $module, $right){
 			$sql = "SELECT count(*) FROM users LEFT JOIN permissions ON permissions.id_user = users.id LEFT JOIN rights ON permissions.id_right = rights.id WHERE users.login = ? AND rights.module = ? and rights.name = ?";
 			if($stmt = mysqli_prepare($link, $sql)){

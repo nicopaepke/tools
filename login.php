@@ -1,7 +1,7 @@
 <?php 
 	include 'config.php';
 	session_start();
-	if(isset($_GET['login'])) {	
+	if(isset($_GET['login'])) {
 		require_once "db.php";
 		
 		$username = $_POST['username'];
@@ -24,6 +24,12 @@
 			mysqli_stmt_close($stmt);
 		}
 		$errorMessage = "Benutzername oder Passwort war ungültig<br>";
+	}
+	
+	if(isset($_GET['logout'])) {
+		if (isset($_SESSION['userid'])){
+			unset($_SESSION['userid']);
+		}
 	}
 ?>
 <html>
@@ -52,7 +58,7 @@ if(isset($errorMessage)) {
 	</div>
 	<div class="row justify-content-center">
 		<div class="row-column col-md-4">	
-				<form action="?login=1" method="post">
+				<form action="?login" method="post">
 				<div class="form-group">
 					<label for="username">Benutzername</label>
 					<input type="text" name="username" class="form-control" 

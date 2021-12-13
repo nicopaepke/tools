@@ -27,3 +27,14 @@ span.rotated-col-header
   transform: rotate(180deg);
   white-space: nowrap;
 }
+.permission-checkbox
+{
+    cursor: pointer;
+}
+.permission-checkbox-label
+{
+	margin-right: 16px !important;
+	margin-left: 3px !important;
+	cursor: pointer;
+}
+	
