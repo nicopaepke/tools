@@ -14,6 +14,7 @@
 		$login = $_POST['username'];
 		$name = $_POST['name'];
 		$password = $_POST['password'];
+		$mailaddress = $_POST['mailaddress'];
 	
 		try{
 			$validated = true;
@@ -33,11 +34,11 @@
 			}
 			
 			if( $validated){
-				$sql = "INSERT INTO users (login, name, password) VALUES (?, ?, ?)";
+				$sql = "INSERT INTO users (login, name, password, mailaddress) VALUES (?, ?, ?, ?)";
 				try{
 				if($stmt = mysqli_prepare($link, $sql)){
 					$hashed_pw = password_hash($password, PASSWORD_BCRYPT);
-					mysqli_stmt_bind_param($stmt, "sss", $login, $name, $hashed_pw);
+					mysqli_stmt_bind_param($stmt, "ssss", $login, $name, $hashed_pw, $mailaddress);
 					if(mysqli_stmt_execute($stmt)){
 						$show_register = false;
 						$show_success = true;
@@ -96,6 +97,7 @@
 			<form style="<?php if(!$show_success) echo "display: none";?>"
 				action="?redirect" method="post">
 				<p>Registrierung war erfolgreich.</p>
+				<p>Sobald Sie freigeschaltet werden, bekommen Sie eine E-Mail.</p>
 				<input class="btn btn-primary" type="submit" value="OK">
 			</form> 
 			
@@ -109,7 +111,10 @@
 					<label for="name">Name</label>
 					<input type="text" name="name" class="form-control" value="" required>
 				</div>
-				 
+				<div class="form-group">
+					<label for="name">E-Mail Adresse</label>
+					<input type="text" name="mailaddress" class="form-control" value="" required>
+				</div>				 
 				<div class="form-group">
 					<label for="password">Passwort</label>
 					<div>

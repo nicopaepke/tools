@@ -1,4 +1,5 @@
 CREATE TABLE `users` ( `id` INT NOT NULL AUTO_INCREMENT, `login` VARCHAR(50) NOT NULL , `name` VARCHAR(255) NOT NULL , `password` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`) , UNIQUE `user_unique_login` (`login`));
+ALTER TABLE `users` ADD `mailaddress` VARCHAR(255) NOT NULL;
 CREATE TABLE `permissions` ( `id_user` INT NOT NULL , `id_right` INT NOT NULL , PRIMARY KEY (`id_user`, `id_right`));
 CREATE TABLE `rights` ( `id` INT NOT NULL AUTO_INCREMENT , `module` VARCHAR(255) NOT NULL , `name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));
 INSERT INTO `rights` ( `module`, `name`) VALUES('PERMISSION_ADMIN', 'VIEW');
@@ -13,3 +14,7 @@ CREATE TABLE `fuel_key_values` ( `k` VARCHAR(255) NOT NULL , `v` VARCHAR(512) NO
 INSERT INTO `fuel_key_values`(`k`, `v`) VALUES ('current','0.0');
 INSERT INTO `fuel_key_values`(`k`, `v`) VALUES ('capacity','6.0');
 INSERT INTO `fuel_key_values`(`k`, `v`) VALUES ('buffer','50');
+
+
+!!!!!!!!!Create your own account by registering and add permission for right PERMISSION_ADMIN / EDIT via SQL!!!!!!!!!
+//INSERT INTO `permissions` (`id_user`, `id_right`) VALUES ('1', '2');

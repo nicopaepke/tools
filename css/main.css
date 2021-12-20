@@ -2,9 +2,6 @@
 .page-header {
 	margin-top: 0px;
 }
-.page-header h2 {
-	margin: 0;
-}
 
 .row-column {
 	margin-left: auto;
@@ -27,6 +24,7 @@
 	background-color: #333;
 	font-family: Arial;
 	border-radius: 0;
+	margin-bottom: 0;
 }
 
 .navbar a {

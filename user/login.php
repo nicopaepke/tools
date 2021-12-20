@@ -60,7 +60,7 @@ if(isset($errorMessage)) {
 		<div class="row-column col-md-4">	
 				<form action="?login" method="post">
 				<div class="form-group">
-					<label for="username">Benutzername</label>
+					<label for="username">Benutzername oder E-Mail Adresse</label>
 					<input type="text" name="username" class="form-control" 
 						value="">
 				</div>
