@@ -8,7 +8,8 @@
 <body>
 <?php
 	require_once '../security.php';
-	require_once 'classes/permissions.php';
+	require_once '../header.php';
+	require_once 'classes/permission.php';
 	require_once '../db.php';
 	
 	$permission = new Permission();

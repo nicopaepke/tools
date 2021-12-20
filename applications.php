@@ -1,6 +1,6 @@
 <?php
 	require_once 'security.php';
-	require_once 'permission/classes/permissions.php';
+	require_once 'permission/classes/permission.php';
 	require_once 'db.php';
 	$permission = new Permission();
 	$permittedModules = $permission->getPermittedModules($link, getCurrentUser());
@@ -49,14 +49,14 @@
 	}
 	
  	echo '	<div class="col-md-4 col-sm-12">';
-	echo '		<a href="login.php?logout">';
+	echo '		<a href="user/login.php?logout">';
 	echo '			<div class="tile">Login</div>';
 	echo '		</a>';
 	echo '	</div>'; 
 
 
 	echo '	<div class="col-md-4 col-sm-12">';
-	echo '		<a href="create_user.php">';
+	echo '		<a href="user/create_user.php">';
 	echo '			<div class="tile">Registrierung</div>';
 	echo '		</a>';
 	echo '	</div>';

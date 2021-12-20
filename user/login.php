@@ -1,8 +1,8 @@
 <?php 
-	include 'config.php';
+	include '../config.php';
 	session_start();
 	if(isset($_GET['login'])) {
-		require_once "db.php";
+		require_once "../db.php";
 		
 		$username = $_POST['username'];
 		$password = $_POST['password'];    
@@ -16,7 +16,7 @@
 			while(mysqli_stmt_fetch($stmt)) {
 			   if( $db_login == $username && password_verify($password, $db_pass)){
 					$_SESSION['userid'] = $username;
-					header("location: index.php");
+					header("location: ../index.php");
 					exit();
 			   }
 			}
@@ -36,8 +36,8 @@
 
 <head>
   <title>Login</title>    
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 </head>

@@ -1,17 +1,16 @@
 <?php 
-	include 'config.php';
-	session_start();
+	include '../config.php';
 	
 	$show_register = true;
 	$show_success = false;
 	$error_message = '';
 	
 	if(isset($_GET['redirect'])) {
-		header("location: index.php");
+		header("location: ../index.php");
 		exit();
 	}
 	if(isset($_GET['register'])) {
-		require_once "db.php";	
+		require_once "../db.php";	
 		$login = $_POST['username'];
 		$name = $_POST['name'];
 		$password = $_POST['password'];
@@ -61,8 +60,8 @@
 
 <head>
   <title>Registrierung</title>    
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <script>

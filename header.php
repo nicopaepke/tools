@@ -11,12 +11,11 @@
 	
 </head>
 <body>
-    <?php
+	<?php
+		require_once 'config.php';
 		require_once 'security.php';
-		include 'header.php';
-		include 'applications.php';	
+		echo '<a href="' . $root_page . '">Hauptmenu</a>';
+		echo '<p>' . $_SESSION['userid'] . '</p>';
 	?>
-	
-	
 </body>
 </html>
