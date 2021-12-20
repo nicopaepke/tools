@@ -37,4 +37,27 @@ span.rotated-col-header
 	margin-left: 3px !important;
 	cursor: pointer;
 }
+
+
+
+.fuel-edit-button {
+	margin-left: -10px;
+	margin-right: 6px;
+}
+.fuel-label-col {
+	width: 30vW;
+	text-align: right;
+}
+.fuel-value-col {
+	width: 30vW;
+	text-align: right;
+}
+.fuel-unit-col {
+	width: 25vW;
 	
+}
+.fuel-input{
+	width: 100%;
+	line-height: 14px;
+    text-align: right;
+}
