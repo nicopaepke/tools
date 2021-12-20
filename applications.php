@@ -49,19 +49,19 @@
 		echo '	</div>';
 	}
 	
- 	echo '	<div class="col-md-4 col-sm-12">';
-	echo '		<a href="user/login.php?logout">';
-	echo '			<div class="tile">Login</div>';
-	echo '		</a>';
-	echo '	</div>'; 
+ 	#echo '	<div class="col-md-4 col-sm-12">';
+	#echo '		<a href="user/login.php?logout">';
+	#echo '			<div class="tile">Login</div>';
+	#echo '		</a>';
+	#echo '	</div>'; 
 
 
-	echo '	<div class="col-md-4 col-sm-12">';
-	echo '		<a href="user/create_user.php">';
-	echo '			<div class="tile">Registrierung</div>';
-	echo '		</a>';
-	echo '	</div>';
-	echo '</div>';
+	#echo '	<div class="col-md-4 col-sm-12">';
+	#echo '		<a href="user/create_user.php">';
+	#echo '			<div class="tile">Registrierung</div>';
+	#echo '		</a>';
+	#echo '	</div>';
+	#echo '</div>';
 	
 	?>
 </div>

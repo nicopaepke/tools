@@ -82,7 +82,7 @@
 		</div>
 	</div>
 	<div class='row justify-content-center'>
-		<div class='row-column col-md-12'>	
+		<div class='row-column col-md-12'>
 		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 		<?php
 
