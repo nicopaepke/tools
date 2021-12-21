@@ -3,8 +3,8 @@ ALTER TABLE `users` ADD `mailaddress` VARCHAR(255) NOT NULL;
 ALTER TABLE `users` ADD UNIQUE `user_unique_mail` (`mailaddress`);
 CREATE TABLE `permissions` ( `id_user` INT NOT NULL , `id_right` INT NOT NULL , PRIMARY KEY (`id_user`, `id_right`));
 CREATE TABLE `rights` ( `id` INT NOT NULL AUTO_INCREMENT , `module` VARCHAR(255) NOT NULL , `name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));
-INSERT INTO `rights` ( `module`, `name`) VALUES('PERMISSION_ADMIN', 'VIEW');
-INSERT INTO `rights` ( `module`, `name`) VALUES('PERMISSION_ADMIN', 'EDIT');
+INSERT INTO `rights` ( `module`, `name`) VALUES('USER_ADMIN', 'VIEW');
+INSERT INTO `rights` ( `module`, `name`) VALUES('USER_ADMIN', 'EDIT');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FUEL', 'VIEW');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FUEL', 'EDIT');
 INSERT INTO `rights` ( `module`, `name`) VALUES('BUDGET', 'VIEW');
@@ -17,5 +17,5 @@ INSERT INTO `fuel_key_values`(`k`, `v`) VALUES ('capacity','6.0');
 INSERT INTO `fuel_key_values`(`k`, `v`) VALUES ('buffer','50');
 
 
-!!!!!!!!!Create your own account by registering and add permission for right PERMISSION_ADMIN / EDIT via SQL!!!!!!!!!
+!!!!!!!!!Create your own account by registering and add permission for right USER_ADMIN / EDIT via SQL!!!!!!!!!
 //INSERT INTO `permissions` (`id_user`, `id_right`) VALUES ('1', '2');

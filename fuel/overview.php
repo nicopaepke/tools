@@ -3,7 +3,7 @@
 	require_once '../db.php';
 	require_once '../header.php';
 		
-	require_once '../permission/classes/permission.php';
+	require_once '../permission/permission.php';
 	
 	$permission = new Permission();
 	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'FUEL')){

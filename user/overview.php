@@ -4,16 +4,26 @@
   <link rel='stylesheet' href='../css/bootstrap.min.css'>
   <link rel='stylesheet' href='../css/main.css'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <script>
+    function clickAccordion(element){
+		var panel = element.nextElementSibling;
+		if (panel.style.display === "block") {
+		  panel.style.display = "none";
+		} else {
+		  panel.style.display = "block";
+		}
+	}
+  </script>
 </head>
 <body>
 <?php
 	require_once '../security.php';
 	require_once '../header.php';
-	require_once 'classes/permission.php';
+	require_once '../permission/permission.php';
 	require_once '../db.php';
 	
 	$permission = new Permission();
-	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'PERMISSION_ADMIN')){
+	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'USER_ADMIN')){
 		include '../access_denied.html';
 		exit();
 	}
@@ -30,7 +40,7 @@
 		}
 		mysqli_free_result($result);
 	}
-	$sql = 'SELECT id, name, login FROM users';
+	$sql = 'SELECT id, name, login, mailaddress FROM users';
 	$users = [];
 	if($result = mysqli_query($link, $sql)){
 		while($row = mysqli_fetch_array($result)){
@@ -77,7 +87,7 @@
 	<div class='row justify-content-center'>
 		<div class='row-column col-md-12'>	
 			<div class='page-header'>
-				<h2>Berechtigungen</h2>
+				<h2>Benutzerverwaltung</h2>
 			</div>
 		</div>
 	</div>
@@ -85,51 +95,60 @@
 		<div class='row-column col-md-12'>
 		<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 		<?php
-
-			echo '<table class="table table-bordered table-striped">';
-			echo '<thead>';
-				echo '<tr>';
-					echo '<th>#</th>';
-					echo '<th>Name</th>';
-					echo '<th>Login</th>';
-					foreach($module_rights as $module=>$rights){						
-						echo '<th >' . $module . '</th>';
-					}
-				echo '</tr>';
-
-			echo '</thead>';
-			echo '<tbody>';
-			
 			foreach($users as $user_id=>$user){
-				echo '<tr>';
-					echo '<td>' . $user['id'] . '</td>';
-					echo '<td>' . $user['name'] . '</td>';
-					echo '<td>' . $user['login'] . '</td>';
+				echo '<div class="accordion" onClick="clickAccordion(this)">'
+					. '<span class="glyphicon glyphicon-menu-down"></span>'
+					. $user['name'] . ' (' . $user['login'] . ')</div>';
+				echo '<div class="panel">';
+				echo '<h4>Benutzer Informationen</h4>';
+				echo '<div class="row">';
+				
+					echo '<div class="col-md-4">';
+					echo '<p><b>ID: </b>' . $user_id . '</p>';
+					echo '</div>';
+					echo '<div class="col-md-4">';
+					echo '<p><b>Login: </b>' . $user['login'] . '</p>';
+					echo '</div>';
+					echo '<div class="col-md-4">';
+					echo '<p><b>E-Mail: </b>' . $user['mailaddress'] . '</p>';
+					echo '</div>';
+					echo '<div class="col-md-4">';
+					echo '<p><b>Name: </b>' . $user['name'] . '</p>';
+					echo '</div>';
+				
+				echo '</div>';
+				echo '<hr>';
+				
+					echo '<h4>Berechtigungen</h4>';
 					foreach($module_rights as $module=>$rights){
-						echo '<td>';
-						foreach($rights as $idx=>$right){
-							$inputkey = $user_id . '#*#' . $module . '#*#' . $right;
-							echo '<input class="permission-checkbox" name="' .  $inputkey . '" id="' . $inputkey .'" type="checkbox" ';
-							if( $user_permissions[$user_id][$module][$right] == true){
-								echo 'checked';
+						echo '<div class="row permission-row">';
+						echo '<div class="col-xs-4">';
+						echo '<p><b>' . $module . ':</b></p>';
+						echo '</div>';
+						echo '<div class="col-xs-5">';
+							foreach($rights as $idx=>$right){
+								$inputkey = $user_id . '#*#' . $module . '#*#' . $right;
+								echo '<span class="permission"><input name="' .  $inputkey . '" id="' . $inputkey .'" type="checkbox" ';
+								if( $user_permissions[$user_id][$module][$right] == true){
+									echo 'checked';
+								}
+								echo '><label class="permission-label" for="' . $inputkey . '">' . $right . '</label></span>';
 							}
-							echo'><label class="permission-checkbox-label" for="' . $inputkey . '">' . $right . '</label>';
-						}
-						echo '</td>';
-					}
+						echo '</div>';
+						echo '</div>';				
+					}					
 					
-				echo '</tr>';
+				echo '</br>';		
+				echo '</div>';
 			}
-			echo '</tbody>';                            
-			echo '</table>';
-			if( $permission->hasPermission($link, getCurrentUser(), 'PERMISSION_ADMIN', 'EDIT')){
-				echo '<input class="btn btn-primary" type="submit" value="Speichern" />';
+			if( $permission->hasPermission($link, getCurrentUser(), 'USER_ADMIN', 'EDIT')){
+				echo '</br><input class="btn btn-primary" type="submit" value="Speichern" />';
 			}
 		?>
 		</form>
 		</div>
-	</div>
-	
+	</div>	
 </div>
 </body>
-</html>
+
+</html>  

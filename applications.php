@@ -1,6 +1,6 @@
 <?php
 	require_once 'security.php';
-	require_once 'permission/classes/permission.php';
+	require_once 'permission/permission.php';
 	require_once 'db.php';
 	$permission = new Permission();
 	$permittedModules = $permission->getPermittedModules($link, getCurrentUser());
@@ -33,10 +33,10 @@
 		echo '		</a>';
 		echo '	</div>';
 	}
-	if( in_array('PERMISSION_ADMIN', $permittedModules)){
+	if( in_array('USER_ADMIN', $permittedModules)){
 		echo '	<div class="col-md-4">';
-		echo '		<a href="permission/overview.php">';
-		echo '			<div class="tile">Rechteverwaltung</div>';
+		echo '		<a href="user/overview.php">';
+		echo '			<div class="tile">Benutzerverwaltung</div>';
 		echo '		</a>';
 		echo '	</div>';
 	}

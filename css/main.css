@@ -24,6 +24,7 @@
 	color: red;
 }
 
+/* navigation */
 .navbar {
 	background-color: #333;
 	font-family: Arial;
@@ -93,16 +94,44 @@
     text-align: right;
 }
 
-
-
-/* permissions */
-.permission-checkbox {
-    cursor: pointer;
+/* accodion */
+.accordion {
+  background-color: #eee;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.4s;
 }
-.permission-checkbox-label{
-	margin-right: 16px !important;
-	margin-left: 3px !important;
-	cursor: pointer;
+
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  display: none;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+/* permission */
+.permission {
+    margin-right: 20px;
+}
+.permission-row:hover {
+	background-color: #ccc;
+}
+.permission-row {
+	padding-top: 6px;
+}
+.permission-label {
+	font-weight: normal;
 }
 
 
