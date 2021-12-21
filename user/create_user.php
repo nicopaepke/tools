@@ -36,15 +36,23 @@
 			if( $validated){
 				$sql = "INSERT INTO users (login, name, password, mailaddress) VALUES (?, ?, ?, ?)";
 				try{
-				if($stmt = mysqli_prepare($link, $sql)){
-					$hashed_pw = password_hash($password, PASSWORD_BCRYPT);
-					mysqli_stmt_bind_param($stmt, "ssss", $login, $name, $hashed_pw, $mailaddress);
-					if(mysqli_stmt_execute($stmt)){
-						$show_register = false;
-						$show_success = true;
+					if($stmt = mysqli_prepare($link, $sql)){
+						$hashed_pw = password_hash($password, PASSWORD_BCRYPT);
+						mysqli_stmt_bind_param($stmt, "ssss", $login, $name, $hashed_pw, $mailaddress);
+						if(mysqli_stmt_execute($stmt)){
+							$show_register = false;
+							$show_success = true;
+							
+							require_once '../mail/mail.php';
+							$helper = new MailHelper();
+							$newAccountBody = 'Neuer Account</br>'
+								. 'Login: <b>' . $login . '</b></br>'
+								. 'Name: <b>' . $name . '</b></br>'
+								. 'EMail Adresse: <b>' . $mailaddress . '</b></br>';
+							$helper->sendMail($smtp_sender_address, 'Neuer Account', $newAccountBody);
+						}
 					}
-				}
-				$error_message = mysqli_error($link);
+					$error_message = mysqli_error($link);
 				}
 				finally{
 					mysqli_stmt_close($stmt);
@@ -53,9 +61,8 @@
 		}
 		catch(Exception $e){
 			$error_message = $e->getMessage();
-		}		
-	}	
-
+		}	
+	}
 ?>
 <html>
 
