@@ -121,8 +121,17 @@
 }
 
 /* permission */
+.permission-wrapper {
+    margin-right: 30px;
+}
 .permission {
-    margin-right: 20px;
+    margin-right: 8px;
+}
+span.permission.grant {
+    color: green;
+}
+span.permission.denied {
+    color: red;
 }
 .permission-row:hover {
 	background-color: #ccc;

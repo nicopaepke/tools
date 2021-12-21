@@ -141,14 +141,58 @@
 				echo '</br>';		
 				echo '</div>';
 			}
+			echo '</br>';		
+			echo '<div class="accordion" onClick="clickAccordion(this)">'
+					. '<span class="glyphicon glyphicon-menu-down"></span>'
+					. 'Übersicht Brechtigungen</div>';			
+			echo '<div style="overflow-x: auto;" class="panel">';
+			echo '<table class="table table-bordered table-striped">';
+				echo '<thead>';
+					echo '<tr>';
+						echo '<th>#</th>';
+						echo '<th>Name</th>';
+						foreach($module_rights as $module=>$rights){						
+							echo '<th>' . $module . '</th>';
+						}
+					echo '</tr>';
+				echo '</thead>';
+				echo '<tbody>';
+				foreach($users as $user_id=>$user){
+					echo '<tr>';
+					echo '<td>' . $user['id'] . '</td>';
+					echo '<td>' . $user['name'] . '</td>';
+					
+					foreach($module_rights as $module=>$rights){
+						echo '<td>';
+						foreach($rights as $idx=>$right){
+							echo '<span class="permission-wrapper"><span class="permission glyphicon ';
+							if( $user_permissions[$user_id][$module][$right] == true){
+								echo 'grant glyphicon-ok';
+							}
+							else{
+								echo 'denied glyphicon-remove';
+							}
+							
+							echo '"></span><span>' . $right . '</span></span>';
+						}
+						echo '</td>';
+					}
+					echo '</tr>';
+				}
+				echo '</tbody>';
+			echo '</table>';
+
+			echo '</div>';
+					
 			if( $permission->hasPermission($link, getCurrentUser(), 'USER_ADMIN', 'EDIT')){
 				echo '</br><input class="btn btn-primary" type="submit" value="Speichern" />';
 			}
 		?>
+				
 		</form>
 		</div>
 	</div>	
 </div>
 </body>
 
-</html>  
+</html>
