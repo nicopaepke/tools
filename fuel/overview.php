@@ -79,10 +79,7 @@
 		}
 	}else{
 		echo 'failed ' . $sql;
-	}
-
-	mysqli_close($link);
-	
+	}	
 	
 	//calculation
 	$consumption_sum = 0.0;
@@ -190,7 +187,7 @@
 					if( $hasEditRight){
 						echo '<hr></hr>';
 						echo '<div style="text-align: center">';
-						echo '	<input id="refresh-button" class="btn btn-primary" type="submit" value="Refresh" />';
+						echo '	<input id="refresh-button" class="btn btn-primary" type="submit" value="Speichern" />';
 						echo '	<a id="add-button" href="entry_editor.php" class="btn btn-primary">Neuer Eintrag</a>';
 						echo '</div>';
 					}

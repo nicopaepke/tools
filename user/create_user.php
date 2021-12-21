@@ -18,15 +18,15 @@
 	
 		try{
 			$validated = true;
-			$sql = "SELECT login FROM users where login = ?";
+			$sql = "SELECT login FROM users WHERE LOWER(login) = LOWER(?) OR LOWER(mailaddress) = LOWER(?)";
 			$stmt = mysqli_prepare($link, $sql);
 			try{
-				mysqli_stmt_bind_param($stmt, "s", $login);
+				mysqli_stmt_bind_param($stmt, "ss", $login, $mailaddress);
 				mysqli_stmt_execute($stmt);
 				mysqli_stmt_bind_result($stmt, $db_login);
 				while(mysqli_stmt_fetch($stmt)) {
 					$validated = false;
-					$error_message = "Der Benutzername ist bereits vergeben";
+					$error_message = "Der Benutzername oder EMail Adresse ist bereits vergeben";
 					break;
 				}
 			} finally {
@@ -88,10 +88,10 @@
 		</div>
 	</div>
 	<div class="row justify-content-center">
-		<div class="row-column col-md-4 col-sm-12">	
+		<div class="row-column col-md-4">	
 			<?php 
 				if($error_message != ''){
-					echo '<p>Registierung fehlgeschlagen: ' . $error_message . '</p>';
+					echo '<p class="error-message">Registierung fehlgeschlagen: ' . $error_message . '</p>';
 				}
 			?>				
 			<form style="<?php if(!$show_success) echo "display: none";?>"

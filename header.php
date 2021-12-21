@@ -21,32 +21,16 @@
 </head>
 <body>
 	<div class="navbar">
-		<a class="home" href=<?php echo '"' . $root_page . '"'?>>Home</a>
-		<div class="dropdown">
-			<button class="dropbtn">Applikationen
-				<i class="glyphicon glyphicon-menu-down"></i>
-			</button>
-			<div class="dropdown-content">
-			<?php
-				if( in_array('BUDGET', $permittedModules)){
-					echo '<a href="' . $root_page . '/budget/overview.php">Haushaltsbuch</a>';
-				}
-				if( in_array('PERMISSION_ADMIN', $permittedModules)){
-					echo '<a href="' . $root_page . '/permission/overview.php">Rechteverwaltung</a>';
-				}
-				if( in_array('FUEL', $permittedModules)){
-					echo '<a href="' . $root_page . '/fuel/overview.php">Kraftstoff</a>';
-				}
-			?>
-			</div>			
-		</div>
+		<a class="home" href=<?php echo '"' . $root_page . '"'?>>Home</i></a>
 		<div class="topnav-right">
 			<div class="dropdown">
 				<button class="dropbtn"><?php echo $_SESSION['userid'];?>					
-					<i class="glyphicon glyphicon glyphicon-menu-down"></i>
+					<i class="glyphicon glyphicon-menu-down"></i>
 				</button>
 				<div class="dropdown-content">
-					<a href="user/login.php?logout">Logout</a>
+					<?php
+					echo '<a href="' . $root_page . '/user/login.php?logout">Logout</a>';
+					?>
 				</div>
 			</div>			
 		</div>

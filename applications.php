@@ -4,7 +4,6 @@
 	require_once 'db.php';
 	$permission = new Permission();
 	$permittedModules = $permission->getPermittedModules($link, getCurrentUser());
-	mysqli_close($link);
 ?>
 <html>
 
@@ -28,35 +27,35 @@
 	<?php
 	if( in_array('BUDGET', $permittedModules)){
 		echo '<div class="row justify-content-center">';
-		echo '	<div class="col-md-4 col-sm-12">';
+		echo '	<div class="col-md-4">';
 		echo '		<a href="budget/overview.php">';
 		echo '			<div class="tile">Haushaltsbuch</div>';
 		echo '		</a>';
 		echo '	</div>';
 	}
 	if( in_array('PERMISSION_ADMIN', $permittedModules)){
-		echo '	<div class="col-md-4 col-sm-12">';
+		echo '	<div class="col-md-4">';
 		echo '		<a href="permission/overview.php">';
 		echo '			<div class="tile">Rechteverwaltung</div>';
 		echo '		</a>';
 		echo '	</div>';
 	}
 	if( in_array('FUEL', $permittedModules)){
-		echo '	<div class="col-md-4 col-sm-12">';
+		echo '	<div class="col-md-4">';
 		echo '		<a href="fuel/overview.php">';
 		echo '			<div class="tile">Kraftstoff</div>';
 		echo '		</a>';
 		echo '	</div>';
 	}
 	
- 	#echo '	<div class="col-md-4 col-sm-12">';
+ 	#echo '	<div class="col-md-4">';
 	#echo '		<a href="user/login.php?logout">';
 	#echo '			<div class="tile">Login</div>';
 	#echo '		</a>';
 	#echo '	</div>'; 
 
 
-	#echo '	<div class="col-md-4 col-sm-12">';
+	#echo '	<div class="col-md-4">';
 	#echo '		<a href="user/create_user.php">';
 	#echo '			<div class="tile">Registrierung</div>';
 	#echo '		</a>';

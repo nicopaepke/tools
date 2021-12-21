@@ -7,15 +7,15 @@
 		$username = $_POST['username'];
 		$password = $_POST['password'];    
 			
-		$sql = "SELECT login, password FROM users where login = ?";
+		$sql = "SELECT login, password FROM users WHERE LOWER(login) = LOWER(?) OR LOWER(mailaddress) = LOWER(?)";
 		$stmt = mysqli_prepare($link, $sql);
 		try{
-			mysqli_stmt_bind_param($stmt, "s", $username);
+			mysqli_stmt_bind_param($stmt, "ss", $username, $username);
 			mysqli_stmt_execute($stmt);
 			mysqli_stmt_bind_result($stmt, $db_login, $db_pass);
 			while(mysqli_stmt_fetch($stmt)) {
-			   if( $db_login == $username && password_verify($password, $db_pass)){
-					$_SESSION['userid'] = $username;
+			   if( password_verify($password, $db_pass)){
+					$_SESSION['userid'] = $db_login;
 					header("location: ../index.php");
 					exit();
 			   }
@@ -43,11 +43,7 @@
 </head>
 <body>
 
-<?php 
-if(isset($errorMessage)) {
-    echo $errorMessage;
-}
-?>
+
 <div class="container-fluid">
 	<div class="row justify-content-center">
 		<div class="row-column col-md-4">	
@@ -58,7 +54,12 @@ if(isset($errorMessage)) {
 	</div>
 	<div class="row justify-content-center">
 		<div class="row-column col-md-4">	
-				<form action="?login" method="post">
+			<?php 
+			if(isset($errorMessage)) {
+				echo '<p class="error-message">' . $errorMessage . '</p>';
+			}
+			?>
+			<form action="?login" method="post">
 				<div class="form-group">
 					<label for="username">Benutzername oder E-Mail Adresse</label>
 					<input type="text" name="username" class="form-control" 
@@ -74,7 +75,7 @@ if(isset($errorMessage)) {
 				</div>
 				 
 				<input class="btn btn-primary" type="submit" value="Login">
-				</form> 
+			</form> 
 		</div>
 	</div>
 	<div class="row justify-content-center">

@@ -20,6 +20,10 @@
 	border-radius: 20px;
 }
 
+.error-message {
+	color: red;
+}
+
 .navbar {
 	background-color: #333;
 	font-family: Arial;

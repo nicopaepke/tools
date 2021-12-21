@@ -123,7 +123,7 @@
 			echo '</tbody>';                            
 			echo '</table>';
 			if( $permission->hasPermission($link, getCurrentUser(), 'PERMISSION_ADMIN', 'EDIT')){
-				echo '<input class="btn btn-primary" type="submit" value="Save" />';
+				echo '<input class="btn btn-primary" type="submit" value="Speichern" />';
 			}
 		?>
 		</form>
