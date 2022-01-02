@@ -145,6 +145,9 @@ span.permission.denied {
 
 
 /* fuel */
+.fuel table {
+	font-size: 14px;
+}
 .fuel-edit-button {
 	margin-left: -10px;
 	margin-right: 6px;
@@ -165,4 +168,11 @@ span.permission.denied {
 	width: 100%;
 	line-height: 14px;
     text-align: right;
+}
+.refueling-table td, th{
+	text-align: right;
+}
+#vehicle_sector {
+    width: 100%;
+    margin: -15px 0 12px 0;
 }

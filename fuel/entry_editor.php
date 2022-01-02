@@ -11,7 +11,7 @@ if( !$permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT')){
 }
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-	if(isset($_GET["id"]) && !empty($_GET["id"])){
+	if(isset($_GET["id"]) && !empty($_GET["id"]) && isset($_GET["id_vehicle"])){
 		$sql = "UPDATE fuel_refueling SET odometer = ?, refueling_date = ?, refueled = ?, deleted = ? WHERE id = ?";
 		if($stmt = mysqli_prepare($link, $sql)){
 			mysqli_stmt_bind_param($stmt, "dsddd", $param_odo, $param_date, $param_refueled, $param_deleted, $param_id);
@@ -21,7 +21,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			$param_refueled = $_POST['refueled'];
 			$param_deleted = $_POST['deleted'];
 			if(mysqli_stmt_execute($stmt)){        
-				header("location: overview.php");
+				header("location: overview.php?id_vehicle=" . $_GET["id_vehicle"]);
+				exit();
+			} else{
+				echo 'Something went wrong. Please try again later.';
+			}
+			mysqli_stmt_close($stmt);
+		}
+	}else if( isset($_GET["id_vehicle"])){
+		$sql = "INSERT INTO fuel_refueling ( id_vehicle, odometer, refueling_date, refueled) VALUES (?, ?, ?, ?)";
+		if($stmt = mysqli_prepare($link, $sql)){
+			mysqli_stmt_bind_param($stmt, "idsd", $_GET["id_vehicle"], $param_odo, $param_date, $param_refueled);
+			$param_date = $_POST['date'];
+			$param_odo = $_POST['odo'];
+			$param_refueled = $_POST['refueled'];
+			if(mysqli_stmt_execute($stmt)){        
+				header("location: overview.php?id_vehicle=" . $_GET["id_vehicle"]);
 				exit();
 			} else{
 				echo 'Something went wrong. Please try again later.';
@@ -29,20 +44,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			mysqli_stmt_close($stmt);
 		}
 	}else{
-		$sql = "INSERT INTO fuel_refueling ( odometer, refueling_date, refueled) VALUES (?, ?, ?)";
-		if($stmt = mysqli_prepare($link, $sql)){
-			mysqli_stmt_bind_param($stmt, "dsd", $param_odo, $param_date, $param_refueled);
-			$param_date = $_POST['date'];
-			$param_odo = $_POST['odo'];
-			$param_refueled = $_POST['refueled'];
-			if(mysqli_stmt_execute($stmt)){        
-				header("location: overview.php");
-				exit();
-			} else{
-				echo 'Something went wrong. Please try again later.';
-			}
-			mysqli_stmt_close($stmt);
-		}
+		echo '<p class="error-message">Fehler: es fehlen Parameter, um diese Aktion durchzuführen</p>';
 	}
 
 }
@@ -97,8 +99,11 @@ if(isset($_GET["id"]) && !empty($_GET["id"])){
 				<?php 
 				echo '<form action="';
 					echo htmlspecialchars($_SERVER["PHP_SELF"]);
+					if( isset($_GET["id_vehicle"])){
+						echo '?id_vehicle=' . $_GET["id_vehicle"];
+					}
 					if( isset($_GET["id"]) && !empty($_GET["id"])){
-						echo '?id=' . $_GET["id"];
+						echo '&id=' . $_GET["id"];
 					}
 				echo '"method="post">';
 				?>

@@ -13,94 +13,88 @@
 	
 	$hasEditRight = $permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT');
 	
-	if($_SERVER["REQUEST_METHOD"] == "POST" && $permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT')){
-		$sql = "UPDATE fuel_key_values SET v = ? WHERE k = ?";
+	if(isset($_GET["id_vehicle"]) && $_SERVER["REQUEST_METHOD"] == "POST" && $permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT')){
+		$sql = "UPDATE fuel_vehicle SET current = ?, capacity = ?, buffer = ? WHERE id = ?";
 		if($stmt = mysqli_prepare($link, $sql)){
-			mysqli_stmt_bind_param($stmt, "ss", $param_value, $param_key);
-			$param_value = $_POST['current'];
-			$param_key = 'current';
-			mysqli_stmt_execute($stmt);
-			
-			$param_value = $_POST['capacity'];
-			$param_key = 'capacity';
-			mysqli_stmt_execute($stmt);
-			
-			$param_value = $_POST['buffer'];
-			$param_key = 'buffer';
-			mysqli_stmt_execute($stmt);
-			
-			mysqli_stmt_close($stmt);
+			try{
+				mysqli_stmt_bind_param($stmt, "dddi", $_POST['current'], $_POST['capacity'], $_POST['buffer'], $_GET["id_vehicle"]);
+				mysqli_stmt_execute($stmt);
+			} finally {
+				mysqli_stmt_close($stmt);
+			}
+		} else{
+			echo mysqli_error($link);
 		}
 	}
-		
 	
-	$rows = [];
-	$sql = "SELECT id, refueling_date, odometer, refueled FROM fuel_refueling WHERE deleted = 0 ORDER BY refueling_date DESC";
+	$vehicles = [];
+	$selected_vehicle = null;
+	$current = 0;
+	$capacity = 0;
+	$buffer = 0;
+	$sql = "SELECT id, name, current, capacity, buffer FROM fuel_vehicle";
 	if($result = mysqli_query($link, $sql)){
 		if(mysqli_num_rows($result) > 0){
 			while($row = mysqli_fetch_array($result)){
-				$rows[] = $row;
+				$vehicles[] = $row;
+				if(isset($_GET["id_vehicle"]) && $_GET["id_vehicle"] == $row['id']){
+					$selected_vehicle = $row;
+				}
 			}
-		} else{
-			#echo "<p class='lead'><em>Keine Daten gefunden</em></p>";
 		}
+		mysqli_free_result($result);
 	} else{
 		echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 	}
 	
-	$sql = "SELECT k, v FROM fuel_key_values WHERE k = 'current'";
-	if($result = mysqli_query($link, $sql)){
-		if(mysqli_num_rows($result) > 0){
-			$current = mysqli_fetch_array($result)['v'];
-		}else{
-			#echo 'insert';
-		}
-	}else{
-		echo 'failed ' . $sql;
-	}
+	$refuelings = [];
+		
+	if($selected_vehicle != null){
+		$current = $selected_vehicle['current'];
+		$capacity = $selected_vehicle['capacity'];
+		$buffer = $selected_vehicle['buffer'];
 
-	$sql = "SELECT k, v FROM fuel_key_values WHERE k = 'capacity'";
-	if($result = mysqli_query($link, $sql)){
-		if(mysqli_num_rows($result) > 0){
-			$capacity = mysqli_fetch_array($result)['v'];
+		
+		$sql = "SELECT id, refueling_date, odometer, refueled FROM fuel_refueling WHERE deleted = 0 AND id_vehicle = ? ORDER BY refueling_date DESC";
+		if($stmt = mysqli_prepare($link, $sql)){
+			try{
+				mysqli_stmt_bind_param($stmt, "i", $selected_vehicle['id']);
+				mysqli_stmt_execute($stmt);
+				$refuel_res = mysqli_stmt_get_result($stmt);
+				while($refuel = mysqli_fetch_array($refuel_res)) {
+					$refuelings[] = $refuel;
+				}
+			} finally {
+				mysqli_stmt_close($stmt);
+			}
 		}else{
-			#echo 'insert';
+			echo mysqli_error($link);
 		}
-	}else{
-		echo 'failed ' . $sql;
 	}
 	
-	$sql = "SELECT k, v FROM fuel_key_values WHERE k = 'buffer'";
-	if($result = mysqli_query($link, $sql)){
-		if(mysqli_num_rows($result) > 0){
-			$buffer = mysqli_fetch_array($result)['v'];
-		}else{
-			#echo 'insert';
-		}
-	}else{
-		echo 'failed ' . $sql;
-	}	
 	
 	//calculation
 	$consumption_sum = 0.0;
-	for ($i = 0; $i < count($rows) - 1; $i++) {
-		$difference = $rows[$i]['odometer'] - $rows[$i+1]['odometer'];
-		$consumption = round(100 * $rows[$i]['refueled'] / ($difference), 3);
-		$rows[$i]['consumption'] = number_format($consumption, 3, ',', '.');
-		$consumption_sum += $consumption;
-	}
 	$avg_consumption = NAN;
-	if( count($rows) > 1){
-		$avg_consumption = round($consumption_sum / (count($rows) - 1), 3);
-	}
-	if( count($rows) > 0){
-		$rows[count($rows) - 1]['consumption'] = '-';
-	}
 	$refuel_at = NAN;
 	$refuel_in = NAN;
-	if( !is_nan($avg_consumption)){
-		$refuel_at = $rows[0]['odometer'] + $capacity / $avg_consumption * 100 - $buffer;
-		$refuel_in = $refuel_at - $current;
+	if($selected_vehicle != null){
+		for ($i = 0; $i < count($refuelings) - 1; $i++) {
+			$difference = $refuelings[$i]['odometer'] - $refuelings[$i+1]['odometer'];
+			$consumption = round(100 * $refuelings[$i]['refueled'] / ($difference), 3);
+			$refuelings[$i]['consumption'] = number_format($consumption, 3, ',', '.');
+			$consumption_sum += $consumption;
+		}
+		if( count($refuelings) > 1){
+			$avg_consumption = round($consumption_sum / (count($refuelings) - 1), 3);
+		}
+		if( count($refuelings) > 0){
+			$refuelings[count($refuelings) - 1]['consumption'] = '-';
+		}
+		if( !is_nan($avg_consumption)){
+			$refuel_at = $refuelings[0]['odometer'] + $capacity / $avg_consumption * 100 - $buffer;
+			$refuel_in = $refuel_at - $current;
+		}
 	}
 	
 ?>
@@ -111,7 +105,12 @@
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <script>
+	function vehicleChanged(){
+		var id = document.getElementById("vehicle_sector").value;
+		window.location.search = "?id_vehicle=" + id;
+	}
+  </script>
 </head>
 <body>
 <div class='container-fluid fuel'>
@@ -123,8 +122,26 @@
 		</div>
 	</div>
 	<div class='row justify-content-center'>
+		<div class='row-column col-md-4'>
+			<select id="vehicle_sector" onchange="vehicleChanged()">
+				<?php
+					if( $selected_vehicle == null){
+						echo '<option value=""></option>';
+					}
+					foreach($vehicles as $vehicle){
+						echo '<option ';
+						if( $selected_vehicle != null && $vehicle['id'] == $selected_vehicle['id']){
+							echo 'selected ';
+						}
+						echo 'value="' . $vehicle['id'] . '">' . $vehicle['name'] . '</option>';
+					}
+				?>
+			</select>
+		</div>
+	</div>
+	<div class='row justify-content-center'>
 		<div class='row-column col-md-4'>	
-			<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+			<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id_vehicle=' . $selected_vehicle['id']; ?>" method="post">
 				<table class="table table-striped"> 
 					<tbody>
 						<tr>
@@ -184,11 +201,12 @@
 					</tbody>
 				 </table>
 				<?php
-					if( $hasEditRight){
+					if( $hasEditRight && $selected_vehicle != null){
 						echo '<hr></hr>';
 						echo '<div style="text-align: center">';
 						echo '	<input id="refresh-button" class="btn btn-primary" type="submit" value="Speichern" />';
-						echo '	<a id="add-button" href="entry_editor.php" class="btn btn-primary">Neuer Eintrag</a>';
+						echo '	<a id="add-button" href="entry_editor.php?id_vehicle=' . $selected_vehicle['id'];
+						echo '" class="btn btn-primary">Neuer Eintrag</a>';
 						echo '</div>';
 					}
 				?>
@@ -198,7 +216,7 @@
 	</div>
 	<div class='row justify-content-center'>
 		<div class='row-column col-md-4'>
-			<table class="table table-striped"> 
+			<table class="table table-striped refueling-table"> 
 				<thead>
 					<tr>
 						<th>Datum</th>
@@ -209,10 +227,12 @@
 				</thead>
 				<tbody>
 				<?php
-					foreach( $rows as $row ){
+					foreach($refuelings as $row ){
 						echo "<tr>";
 							echo "<td>";
-							echo "<a class='fuel-edit-button' href='entry_editor.php?id=". $row['id'] ."' title='bearbeiten'><span class='glyphicon glyphicon-edit'></span></a>";
+							echo "<a class='fuel-edit-button' href='entry_editor.php?id=". $row['id'];
+							echo "&id_vehicle=" . $selected_vehicle['id'];
+							echo "' title='bearbeiten'><span class='glyphicon glyphicon-edit'></span></a>";
 							echo date_format(date_create($row['refueling_date']), "d.m.Y") . "</td>";
 							echo "<td>" . number_format($row['odometer'], 1, ',', '.') . "</td>";
 							echo "<td>" . number_format($row['refueled'], 2, ',', '.') . "</td>";
