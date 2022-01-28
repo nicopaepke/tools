@@ -11,19 +11,20 @@
 		exit();
 	}
 	
-	$hasEditRight = $permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT');
-	
-	if(isset($_GET["id_vehicle"]) && $_SERVER["REQUEST_METHOD"] == "POST" && $permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT')){
-		$sql = "UPDATE fuel_vehicle SET current = ?, capacity = ?, buffer = ? WHERE id = ?";
-		if($stmt = mysqli_prepare($link, $sql)){
-			try{
-				mysqli_stmt_bind_param($stmt, "dddi", $_POST['current'], $_POST['capacity'], $_POST['buffer'], $_GET["id_vehicle"]);
-				mysqli_stmt_execute($stmt);
-			} finally {
-				mysqli_stmt_close($stmt);
+	if(isset($_GET["id_vehicle"]) && $_SERVER["REQUEST_METHOD"] == "POST"){
+		if(isset($_GET["vehicle_name"]) && $permission->hasPermission($link, getCurrentUser(), 'FUEL', $_GET["vehicle_name"]))
+		{
+			$sql = "UPDATE fuel_vehicle SET current = ?, capacity = ?, buffer = ? WHERE id = ?";
+			if($stmt = mysqli_prepare($link, $sql)){
+				try{
+					mysqli_stmt_bind_param($stmt, "dddi", $_POST['current'], $_POST['capacity'], $_POST['buffer'], $_GET["id_vehicle"]);
+					mysqli_stmt_execute($stmt);
+				} finally {
+					mysqli_stmt_close($stmt);
+				}
+			} else{
+				echo mysqli_error($link);
 			}
-		} else{
-			echo mysqli_error($link);
 		}
 	}
 	
@@ -33,12 +34,17 @@
 	$capacity = 0;
 	$buffer = 0;
 	$sql = "SELECT id, name, current, capacity, buffer FROM fuel_vehicle";
+	
+	$permitted_vehicles = $permission->getPermissions($link, getCurrentUser(), 'FUEL');
+	
 	if($result = mysqli_query($link, $sql)){
 		if(mysqli_num_rows($result) > 0){
 			while($row = mysqli_fetch_array($result)){
-				$vehicles[] = $row;
-				if(isset($_GET["id_vehicle"]) && $_GET["id_vehicle"] == $row['id']){
-					$selected_vehicle = $row;
+				if(in_array($row['name'], $permitted_vehicles)){
+					$vehicles[] = $row;
+					if(isset($_GET["id_vehicle"]) && $_GET["id_vehicle"] == $row['id']){
+						$selected_vehicle = $row;
+					}
 				}
 			}
 		}
@@ -141,7 +147,7 @@
 	</div>
 	<div class='row justify-content-center'>
 		<div class='row-column col-md-4'>	
-			<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id_vehicle=' . $selected_vehicle['id']; ?>" method="post">
+			<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id_vehicle=' . $selected_vehicle['id'] . '&vehicle_name=' . $selected_vehicle['name']; ?>" method="post">
 				<table class="table table-striped"> 
 					<tbody>
 						<tr>
@@ -201,11 +207,11 @@
 					</tbody>
 				 </table>
 				<?php
-					if( $hasEditRight && $selected_vehicle != null){
+					if( $selected_vehicle != null){
 						echo '<hr></hr>';
 						echo '<div style="text-align: center">';
 						echo '	<input id="refresh-button" class="btn btn-primary" type="submit" value="Speichern" />';
-						echo '	<a id="add-button" href="entry_editor.php?id_vehicle=' . $selected_vehicle['id'];
+						echo '	<a id="add-button" href="entry_editor.php?id_vehicle=' . $selected_vehicle['id'] . '&vehicle_name=' . $selected_vehicle['name'];
 						echo '" class="btn btn-primary">Neuer Eintrag</a>';
 						echo '</div>';
 					}
@@ -231,7 +237,7 @@
 						echo "<tr>";
 							echo "<td>";
 							echo "<a class='fuel-edit-button' href='entry_editor.php?id=". $row['id'];
-							echo "&id_vehicle=" . $selected_vehicle['id'];
+							echo "&id_vehicle=" . $selected_vehicle['id'] . '&vehicle_name=' . $selected_vehicle['name'];
 							echo "' title='bearbeiten'><span class='glyphicon glyphicon-edit'></span></a>";
 							echo date_format(date_create($row['refueling_date']), "d.m.Y") . "</td>";
 							echo "<td>" . number_format($row['odometer'], 1, ',', '.') . "</td>";

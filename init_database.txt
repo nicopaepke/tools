@@ -5,14 +5,15 @@ CREATE TABLE `permissions` ( `id_user` INT NOT NULL , `id_right` INT NOT NULL , 
 CREATE TABLE `rights` ( `id` INT NOT NULL AUTO_INCREMENT , `module` VARCHAR(255) NOT NULL , `name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));
 INSERT INTO `rights` ( `module`, `name`) VALUES('USER_ADMIN', 'VIEW');
 INSERT INTO `rights` ( `module`, `name`) VALUES('USER_ADMIN', 'EDIT');
-INSERT INTO `rights` ( `module`, `name`) VALUES('FUEL', 'VIEW');
-INSERT INTO `rights` ( `module`, `name`) VALUES('FUEL', 'EDIT');
 INSERT INTO `rights` ( `module`, `name`) VALUES('BUDGET', 'VIEW');
 INSERT INTO `rights` ( `module`, `name`) VALUES('BUDGET', 'EDIT');
 
 CREATE TABLE `fuel_vehicle` ( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(50) NOT NULL , `current` FLOAT NOT NULL , `capacity` FLOAT NOT NULL , `buffer` FLOAT NOT NULL , PRIMARY KEY (`id`), UNIQUE `f_vehicle_unique_name` (`name`));
 CREATE TABLE `fuel_refueling` ( `id` INT NOT NULL AUTO_INCREMENT, `id_vehicle` INT NOT NULL, `refueling_date` DATE NOT NULL , `odometer` FLOAT NOT NULL , `refueled` FLOAT NOT NULL , `deleted` BOOLEAN NOT NULL DEFAULT FALSE , PRIMARY KEY (`id`));
 
+// Create Vehicle like that:
+//INSERT INTO `fuel_vehicle` (name) VALUES ({VehicleName});
+//INSERT INTO `rights` ( `module`, `name`) VALUES('FUEL', {VehicleName});
 
 !!!!!!!!!Create your own account by registering and add permission for right USER_ADMIN / EDIT via SQL!!!!!!!!!
 //INSERT INTO `permissions` (`id_user`, `id_right`) VALUES ('1', '2');

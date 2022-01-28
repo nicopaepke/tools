@@ -5,7 +5,7 @@ require_once '../header.php';
 require_once '../permission/permission.php';
 	
 $permission = new Permission();
-if( !$permission->hasPermission($link, getCurrentUser(), 'FUEL', 'EDIT')){
+if( !$permission->hasPermission($link, getCurrentUser(), 'FUEL', $_GET["vehicle_name"])){
 	include '../access_denied.html';
 	exit();
 }
@@ -100,7 +100,7 @@ if(isset($_GET["id"]) && !empty($_GET["id"])){
 				echo '<form action="';
 					echo htmlspecialchars($_SERVER["PHP_SELF"]);
 					if( isset($_GET["id_vehicle"])){
-						echo '?id_vehicle=' . $_GET["id_vehicle"];
+						echo '?id_vehicle=' . $_GET["id_vehicle"] . '&vehicle_name=' . $_GET['vehicle_name'];
 					}
 					if( isset($_GET["id"]) && !empty($_GET["id"])){
 						echo '&id=' . $_GET["id"];
