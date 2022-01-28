@@ -65,13 +65,12 @@
 		}
 		mysqli_free_result($result);
 	}
-	
-	
+
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
 		foreach($users as $user_id=>$user){
 			foreach($module_rights as $module=>$rights){
 				foreach($rights as $idx=>$right){
-					$inputkey = $user_id . '#*#' . $module . '#*#' . $right;
+					$inputkey = $user_id . '#*#' . $module . '#*#' . str_replace(' ', '_', $right);
 					if(array_key_exists($inputkey, $_POST) && $user_permissions[$user_id][$module][$right] == false){
 						$permission->createPermission($link, $user_id, $module, $right);
 					}else if(!array_key_exists($inputkey, $_POST) && $user_permissions[$user_id][$module][$right] == true){

@@ -15,5 +15,8 @@ CREATE TABLE `fuel_refueling` ( `id` INT NOT NULL AUTO_INCREMENT, `id_vehicle` I
 //INSERT INTO `fuel_vehicle` (name) VALUES ({VehicleName});
 //INSERT INTO `rights` ( `module`, `name`) VALUES('FUEL', {VehicleName});
 
+CREATE TABLE `budget_account`( `id` INT NOT NULL AUTO_INCREMENT , `name` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`));
+CREATE TABLE `budget_transaction` ( `id` INT NOT NULL AUTO_INCREMENT , `source_account` INT NOT NULL , `target_account` INT NOT NULL , `transaction_date` DATE NOT NULL , `input_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP , `value` FLOAT NOT NULL , `comment` VARCHAR(1000) NOT NULL , PRIMARY KEY (`id`));
+
 !!!!!!!!!Create your own account by registering and add permission for right USER_ADMIN / EDIT via SQL!!!!!!!!!
 //INSERT INTO `permissions` (`id_user`, `id_right`) VALUES ('1', '2');

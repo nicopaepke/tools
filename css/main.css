@@ -169,10 +169,19 @@ span.permission.denied {
 	line-height: 14px;
     text-align: right;
 }
-.refueling-table td, th{
+.refueling-table td, .refueling-table th{
 	text-align: right;
 }
 #vehicle_sector {
     width: 100%;
     margin: -15px 0 12px 0;
+}
+
+/* budget */
+.budget-table {
+	font-size: 14px;
+}
+
+.budget-table .value-col {
+	text-align: right;
 }
