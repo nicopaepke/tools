@@ -47,6 +47,13 @@
 		echo '		</a>';
 		echo '	</div>';
 	}
+	if( in_array('FILESHARE', $permittedModules)){
+		echo '	<div class="col-md-4">';
+		echo '		<a href="fileshare/overview.php">';
+		echo '			<div class="tile">Dateiaustausch</div>';
+		echo '		</a>';
+		echo '	</div>';
+	}
 	
  	#echo '	<div class="col-md-4">';
 	#echo '		<a href="user/login.php?logout">';
