@@ -20,3 +20,9 @@ CREATE TABLE `budget_transaction` ( `id` INT NOT NULL AUTO_INCREMENT , `source_a
 
 !!!!!!!!!Create your own account by registering and add permission for right USER_ADMIN / EDIT via SQL!!!!!!!!!
 //INSERT INTO `permissions` (`id_user`, `id_right`) VALUES ('1', '2');
+
+INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'UPLOAD');
+INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DOWNLOAD');
+INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DELETE_PRIVATE');
+INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DELETE_PUBLIC');
+INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'SUPER_USER');
