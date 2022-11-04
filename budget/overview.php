@@ -6,12 +6,12 @@
 	require_once '../permission/permission.php';
 	
 	$permission = new Permission();
-	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'BUDGET')){
+	if( !$permission->hasPermissionForModule($link, getCurrentUserLogin(), 'BUDGET')){
 		include '../access_denied.html';
 		exit();
 	}
 	
-	$hasEditRight = $permission->hasPermission($link, getCurrentUser(), 'BUDGET', 'EDIT');
+	$hasEditRight = $permission->hasPermission($link, getCurrentUserLogin(), 'BUDGET', 'EDIT');
 	
 	$transactions = [];
 

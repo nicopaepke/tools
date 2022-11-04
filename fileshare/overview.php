@@ -1,3 +1,16 @@
+<?php
+	require_once '../security.php';
+	require_once '../db.php';
+	require_once '../header.php';
+
+	require_once '../permission/permission.php';
+
+	$permission = new Permission();
+	if( !$permission->hasPermissionForModule($link, getCurrentUserLogin(), 'FILESHARE')){
+		include '../access_denied.html';
+		exit();
+	}
+?>
 <html>
 <head>
   <Title>Fileshare</Title>

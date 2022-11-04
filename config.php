@@ -1,6 +1,7 @@
 <?php
 	// application settings
 	$root_page = "";
+	$file_share_directory = "";
 	
 	// databaseconnection
 	$db_servername = "";

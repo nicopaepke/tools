@@ -5,7 +5,7 @@
 	require_once 'db.php';
 	require_once 'permission/permission.php';
 	$permission = new Permission();
-	$permittedModules = $permission->getPermittedModules($link, getCurrentUser());
+	$permittedModules = $permission->getPermittedModules($link, getCurrentUserLogin());
 ?>
 <head>
   <Title></Title>
@@ -24,7 +24,7 @@
 		<a class="home" href=<?php echo '"' . $root_page . '"'?>>Home</i></a>
 		<div class="topnav-right">
 			<div class="dropdown">
-				<button class="dropbtn"><?php echo $_SESSION['userid'];?>					
+				<button class="dropbtn"><?php echo getCurrentUserLogin();?>
 					<i class="glyphicon glyphicon-menu-down"></i>
 				</button>
 				<div class="dropdown-content">

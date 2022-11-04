@@ -23,7 +23,7 @@
 	require_once '../db.php';
 	
 	$permission = new Permission();
-	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'USER_ADMIN')){
+	if( !$permission->hasPermissionForModule($link, getCurrentUserLogin(), 'USER_ADMIN')){
 		include '../access_denied.html';
 		exit();
 	}
@@ -183,7 +183,7 @@
 
 			echo '</div>';
 					
-			if( $permission->hasPermission($link, getCurrentUser(), 'USER_ADMIN', 'EDIT')){
+			if( $permission->hasPermission($link, getCurrentUserLogin(), 'USER_ADMIN', 'EDIT')){
 				echo '</br><input class="btn btn-primary" type="submit" value="Speichern" />';
 			}
 		?>

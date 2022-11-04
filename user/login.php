@@ -7,15 +7,16 @@
 		$username = $_POST['username'];
 		$password = $_POST['password'];    
 			
-		$sql = "SELECT login, password FROM users WHERE LOWER(login) = LOWER(?) OR LOWER(mailaddress) = LOWER(?)";
+		$sql = "SELECT login, password, id FROM users WHERE LOWER(login) = LOWER(?) OR LOWER(mailaddress) = LOWER(?)";
 		$stmt = mysqli_prepare($link, $sql);
 		try{
 			mysqli_stmt_bind_param($stmt, "ss", $username, $username);
 			mysqli_stmt_execute($stmt);
-			mysqli_stmt_bind_result($stmt, $db_login, $db_pass);
+			mysqli_stmt_bind_result($stmt, $db_login, $db_pass, $db_id);
 			while(mysqli_stmt_fetch($stmt)) {
 			   if( password_verify($password, $db_pass)){
-					$_SESSION['userid'] = $db_login;
+					$_SESSION['user']['login'] = $db_login;
+					$_SESSION['user']['id'] = $db_id;
 					header("location: ../index.php");
 					exit();
 			   }
@@ -27,8 +28,8 @@
 	}
 	
 	if(isset($_GET['logout'])) {
-		if (isset($_SESSION['userid'])){
-			unset($_SESSION['userid']);
+		if (isset($_SESSION['user'])){
+			unset($_SESSION['user']);
 		}
 	}
 ?>

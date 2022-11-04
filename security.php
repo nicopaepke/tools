@@ -2,13 +2,17 @@
 session_start();
 include 'config.php';
 
-if(!isset($_SESSION['userid'])) {
+if(!isset($_SESSION['user'])) {
 	header("location: user/login.php");
 	exit();
 }
 
-function getCurrentUser(){
-	return $_SESSION['userid'];
+function getCurrentUserLogin(){
+	return $_SESSION['user']['login'];
+}
+
+function getCurrentUserId(){
+	return $_SESSION['user']['id'];
 }
 
 ?>

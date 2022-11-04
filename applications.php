@@ -3,7 +3,7 @@
 	require_once 'permission/permission.php';
 	require_once 'db.php';
 	$permission = new Permission();
-	$permittedModules = $permission->getPermittedModules($link, getCurrentUser());
+	$permittedModules = $permission->getPermittedModules($link, getCurrentUserLogin());
 ?>
 <html>
 

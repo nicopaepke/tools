@@ -5,7 +5,7 @@ require_once '../header.php';
 require_once '../permission/permission.php';
 	
 $permission = new Permission();
-if( !$permission->hasPermission($link, getCurrentUser(), 'FUEL', $_GET["vehicle_name"])){
+if( !$permission->hasPermission($link, getCurrentUserLogin(), 'FUEL', $_GET["vehicle_name"])){
 	include '../access_denied.html';
 	exit();
 }

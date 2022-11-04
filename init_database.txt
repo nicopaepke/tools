@@ -21,6 +21,8 @@ CREATE TABLE `budget_transaction` ( `id` INT NOT NULL AUTO_INCREMENT , `source_a
 !!!!!!!!!Create your own account by registering and add permission for right USER_ADMIN / EDIT via SQL!!!!!!!!!
 //INSERT INTO `permissions` (`id_user`, `id_right`) VALUES ('1', '2');
 
+CREATE TABLE `files` (`uuid` CHAR(36) NOT NULL , `upload_time_stamp` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, `owner` INT NOT NULL , `file_name` VARCHAR(255) NOT NULL , PRIMARY KEY (`uuid`(36)));
+
 INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'UPLOAD');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DOWNLOAD');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DELETE_PRIVATE');

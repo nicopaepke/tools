@@ -6,13 +6,13 @@
 	require_once '../permission/permission.php';
 	
 	$permission = new Permission();
-	if( !$permission->hasPermissionForModule($link, getCurrentUser(), 'FUEL')){
+	if( !$permission->hasPermissionForModule($link, getCurrentUserLogin(), 'FUEL')){
 		include '../access_denied.html';
 		exit();
 	}
 	
 	if(isset($_GET["id_vehicle"]) && $_SERVER["REQUEST_METHOD"] == "POST"){
-		if(isset($_GET["vehicle_name"]) && $permission->hasPermission($link, getCurrentUser(), 'FUEL', $_GET["vehicle_name"]))
+		if(isset($_GET["vehicle_name"]) && $permission->hasPermission($link, getCurrentUserLogin(), 'FUEL', $_GET["vehicle_name"]))
 		{
 			$sql = "UPDATE fuel_vehicle SET current = ?, capacity = ?, buffer = ? WHERE id = ?";
 			if($stmt = mysqli_prepare($link, $sql)){
@@ -35,7 +35,7 @@
 	$buffer = 0;
 	$sql = "SELECT id, name, current, capacity, buffer FROM fuel_vehicle";
 	
-	$permitted_vehicles = $permission->getPermissions($link, getCurrentUser(), 'FUEL');
+	$permitted_vehicles = $permission->getPermissions($link, getCurrentUserLogin(), 'FUEL');
 	
 	if($result = mysqli_query($link, $sql)){
 		if(mysqli_num_rows($result) > 0){
