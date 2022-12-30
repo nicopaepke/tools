@@ -10,6 +10,51 @@
 		include '../access_denied.html';
 		exit();
 	}
+	
+	$permittedRights = $permission->getPermissions($link, getCurrentUserLogin(), 'FILESHARE');
+	$hasUploadRight = in_array('UPLOAD', $permittedRights);
+	$hasSuperUserRight = in_array('SUPER_USER', $permittedRights);
+		
+	$files = [];
+	$sql = 'SELECT uuid, upload_time_stamp, owner, file_name, size_bytes FROM files';
+	if( !$hasSuperUserRight)
+	{
+		$sql .= ' WHERE owner = ?';
+	}
+	$sql .= ' ORDER BY upload_time_stamp';
+	if($stmt = mysqli_prepare($link, $sql)){
+		try{
+			if( !$hasSuperUserRight)
+			{
+				mysqli_stmt_bind_param($stmt, "i", getCurrentUserId());
+			}
+			mysqli_stmt_execute($stmt);
+			$res = mysqli_stmt_get_result($stmt);
+			while($file = mysqli_fetch_array($res)) {
+				$size = $file['size_bytes'] * 1;
+				$size_unit = ' Byte';
+				if( $size > 1024){
+					$size = $size / 1024;
+					$size_unit = ' kB';
+				}
+				if( $size > 1024){
+					$size = $size / 1024;
+					$size_unit = ' MB';
+				}
+				if( $size > 1024){
+					$size = $size / 1024;
+					$size_unit = ' GB';
+				}
+				$file['size'] = number_format($size, 1, ',', '.') . $size_unit;
+				
+				$files[] = $file;
+			}
+		} finally {
+			mysqli_stmt_close($stmt);
+		}
+	}else{
+		echo mysqli_error($link);
+	}
 ?>
 <html>
 <head>
@@ -69,10 +114,10 @@
 			loaded.toFixed(3) + " von " + total.toFixed(3) + " MB (" + percent + "%) mit " + mbPerSec.toFixed(2) + " MB/Sek";
 	}
 	function completeHandler(event) {
-		getElement("status").innerHTML = event.target.responseText;
 		getElement("progressBar").style.width = 0;
 		getElement("progressDescription").innerHTML = '';
 		getElement('progressDiv').style.display = 'none';
+		location.reload();	
 	}
 	function errorHandler(event) {
 		getElement("status").innerHTML = "Upload Failed";
@@ -98,6 +143,7 @@
 					<col style="width: 25px" />
 					<col style="" />
 					<col style="" />
+					<col style="width: 120px" />
 					<col style="width: 60px" />
 				</colgroup>				
 				<thead>
@@ -105,87 +151,66 @@
 						<th></th>
 						<th>Datum</th>
 						<th>Dateiname</th>
+						<th style="text-align: right">Größe</th>
 						<th>Aktion</th>
 					</tr>
 				</thead>
 				<tbody>
+				<?php
 				
-				<tr>
-					<td><span class="glyphicon glyphicon-lock"></span></td>
-					<td>29.09.2022 15:55:45</td>
-					<td>Private Datei.txt</td>
-					<td>
-						<a href="file_delete.php?id=" title="Datei herunterladen"><span class="glyphicon glyphicon-download"></span></a>
-						<a style="float: right" href="file_delete.php?id=" title="Datei löschen"><span class="glyphicon glyphicon-trash"></span></a>
-					</td>
-				</tr>
-				<tr>
-					<td><span class="glyphicon glyphicon-eye-open"></span></td>
-					<td>29.09.2022 15:55:45</td>
-					<td>öffentliche Datei.txt</td>
-					<td>
-						<a href="file_delete.php?id=" title="Datei herunterladen"><span class="glyphicon glyphicon-download"></span></a>
-						
-					</td>
-				</tr>
-				<tr>
-					<td><span class="glyphicon glyphicon-eye-open"></span></td>
-					<td>29.09.2022 15:55:45</td>
-					<td>Der Dateinamen dieser Datei ist echt ganz schön lang.öffentliche Datei.txt Also so richtig lang meine ich</td>
-					<td>
-						<a href="./file.bin" download="datei.txt"><span class="glyphicon glyphicon-download"></span></a>
-						<a style="float: right" href="file_delete.php?id=" title="Datei löschen"><span class="glyphicon glyphicon-trash"></span></a>
-					</td>
-				</tr>
-				<!--
+					foreach($files as $row ){
+					echo '<tr>';
+					echo '	<td><span class="glyphicon glyphicon-lock"></span></td>';
+					echo '	<td>' . date_format(date_create($row['upload_time_stamp']), "d.m.Y H:i:s") . '</td>';
+					echo '	<td>' . $row['file_name'] . '</td>';
+					echo '	<td style="text-align: right">' . $row['size'] . '</td>';
+					echo '	<td>';
+					echo '		<a href="file_delete.php?id=' . $row['file_name'] . '" title="Datei herunterladen"><span class="glyphicon glyphicon-download"></span></a>';
+					echo '		<a style="float: right" href="file_delete.php?id=" title="Datei löschen"><span class="glyphicon glyphicon-trash"></span></a>';
+					echo '	</td>';
+					echo '</tr>';
+					}					
+				?>
 				
-					foreach($transactions as $row ){
-						echo '<tr>';
-							echo '<td class="value-col">' . $row['id'] . '</td>';				
-							echo '<td>' . $row['source_acc'] . '</td>';				
-							echo '<td>' . $row['target_acc']. '</td>';				
-							echo '<td>' . date_format(date_create($row['transaction_date']), "d.m.Y") . '</td>';				
-							echo '<td class="value-col">' . number_format($row['value'], 2) . ' €</td>';				
-							echo '<td>' . $row['comment'] . '</td>';				
-							echo '<td>' . date_format(date_create($row['input_date']), "d.m.Y H:i:s") . '</td>';				
-							echo '<td>';
-							if( $hasEditRight){
-								echo '<a href="buchung_delete.php?id=' . $row['id'] . '" title="Buchung löschen"><span class="glyphicon glyphicon-trash"></span></a>';
-							}
-							echo '</td>';				
-						echo '</tr>';
-					}
-				-->
 				</tbody>
 			 </table>
 		</div>
 	</div>
 	<hr>
-	<div class='row justify-content-center'>
-		<div class='row-column col-md-12'>
-			<form id="upload_form" enctype="multipart/form-data" method="post">
-				<div class="form-group">
-					<input type="file" name="uploadingfile" id="uploadingfile">
-				</div>
-				<div class="form-group">
-					<input class="btn btn-primary" type="button" value="Hochladen" name="btnSubmit"
-						   onclick="uploadFileHandler()">
-					</div>
-				<div class="form-group">
-					<div class="progress" id="progressDiv" style="display:block" >
-						<span id="progressDescription" style="color:black;position:absolute;text-align:center;width:100%">
-
-						</span>
-						<div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
-					</div>
-				</div>
-				<div class="form-group">
-					<h3 id="status"></h3>
-					<p id="uploaded_progress"></p>
-				</div>
-			</form>
-		</div>
-	</div>
+	
+	<?php 
+	if( $hasUploadRight)
+	{
+		echo '<div class="row justify-content-center">';
+		echo '	<div class="row-column col-md-12">';
+		echo '		<form id="upload_form" enctype="multipart/form-data" method="post">';
+		echo '			<div class="form-group">';
+		echo '				<input type="checkbox" name="ispublicfile" id="ispublicfile"/>';
+		echo '				<label for="ispublicfile">öffentliche Datei</label>';
+		echo '			</div>';
+		echo '			<div class="form-group">';
+		echo '				<input type="file" name="uploadingfile" id="uploadingfile"/>';
+		echo '			</div>';
+		echo '			<div class="form-group">';
+		echo '				<input class="btn btn-primary" type="button" value="Hochladen" name="btnSubmit"';
+		echo '					   onclick="uploadFileHandler()">';
+		echo '				</div>';
+		echo '			<div class="form-group">';
+		echo '				<div class="progress" id="progressDiv" style="display:block" >';
+		echo '					<span id="progressDescription" style="color:black;position:absolute;text-align:center;width:100%">';
+		echo '					</span>';
+		echo '					<div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>';
+		echo '				</div>';
+		echo '			</div>';
+		echo '			<div class="form-group">';
+		echo '				<h3 id="status"></h3>';
+		echo '				<p id="uploaded_progress"></p>';
+		echo '			</div>';
+		echo '		</form>';
+		echo '	</div>';
+		echo '</div>';
+	}
+	?>
 </div>
 </body>
 </html>

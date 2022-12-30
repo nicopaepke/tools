@@ -28,3 +28,5 @@ INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DOWNLOAD');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DELETE_PRIVATE');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'DELETE_PUBLIC');
 INSERT INTO `rights` ( `module`, `name`) VALUES('FILESHARE', 'SUPER_USER');
+
+ALTER TABLE `files` ADD `size_bytes` BIGINT UNSIGNED NULL DEFAULT NULL, ADD `is_public` BOOLEAN NULL DEFAULT TRUE;

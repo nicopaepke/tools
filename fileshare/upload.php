@@ -15,8 +15,9 @@ if (!$_FILES["uploadingfile"]["tmp_name"]) {
 
 	$original_file_name = $_FILES["uploadingfile"]["name"];
 	$owner = getCurrentUserId();
-	#$size_raw = $_FILES["uploadingfile"]["size"];
+	$size_raw = $_FILES["uploadingfile"]["size"];
 	#$size_as_mb = number_format(($size_raw / 1048576), 2);
+	$is_public = false;
 	
 	if (move_uploaded_file($_FILES["uploadingfile"]["tmp_name"], $file_share_directory . $uuid)) {
 		echo "Datei erfolgreich hochgeladen";
@@ -25,10 +26,10 @@ if (!$_FILES["uploadingfile"]["tmp_name"]) {
         echo "Datei konnte nicht kopiert werden";
     }
 
-    $sql = "INSERT INTO files (uuid, owner, file_name) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO files (uuid, owner, file_name, size_bytes, is_public) VALUES (?, ?, ?, ?, ?)";
     try{
         if($stmt = mysqli_prepare($link, $sql)){
-            mysqli_stmt_bind_param($stmt, "sss", $uuid, $owner, $original_file_name);
+            mysqli_stmt_bind_param($stmt, "sssii", $uuid, $owner, $original_file_name, $size_raw, $is_public);
             if(mysqli_stmt_execute($stmt)){
                 exit();
             }
