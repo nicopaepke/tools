@@ -17,7 +17,10 @@ if (!$_FILES["uploadingfile"]["tmp_name"]) {
 	$owner = getCurrentUserId();
 	$size_raw = $_FILES["uploadingfile"]["size"];
 	#$size_as_mb = number_format(($size_raw / 1048576), 2);
-	$is_public = false;
+	$is_public = 0;
+	if( $_POST["ispublic"] == "true"){
+		$is_public = 1;
+	}
 	
 	if (move_uploaded_file($_FILES["uploadingfile"]["tmp_name"], $file_share_directory . $uuid)) {
 		echo "Datei erfolgreich hochgeladen";

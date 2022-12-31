@@ -13,47 +13,54 @@
 	
 	$permittedRights = $permission->getPermissions($link, getCurrentUserLogin(), 'FILESHARE');
 	$hasUploadRight = in_array('UPLOAD', $permittedRights);
+	$hasDownloadRight = in_array('DOWNLOAD', $permittedRights);
 	$hasSuperUserRight = in_array('SUPER_USER', $permittedRights);
+	$hasDeletePrivateRight = in_array('DELETE_PRIVATE', $permittedRights);
+	$hasDeletePublicRight = in_array('DELETE_PUBLIC', $permittedRights);
+	
+	$hasDeletePrivateRight = $hasDeletePrivateRight || $hasSuperUserRight;
+	$hasDeletePublicRight = $hasDeletePublicRight || $hasSuperUserRight;
 		
 	$files = [];
-	$sql = 'SELECT uuid, upload_time_stamp, owner, file_name, size_bytes FROM files';
-	if( !$hasSuperUserRight)
-	{
-		$sql .= ' WHERE owner = ?';
-	}
-	$sql .= ' ORDER BY upload_time_stamp';
-	if($stmt = mysqli_prepare($link, $sql)){
-		try{
-			if( !$hasSuperUserRight)
-			{
-				mysqli_stmt_bind_param($stmt, "i", getCurrentUserId());
-			}
-			mysqli_stmt_execute($stmt);
-			$res = mysqli_stmt_get_result($stmt);
-			while($file = mysqli_fetch_array($res)) {
-				$size = $file['size_bytes'] * 1;
-				$size_unit = ' Byte';
-				if( $size > 1024){
-					$size = $size / 1024;
-					$size_unit = ' kB';
-				}
-				if( $size > 1024){
-					$size = $size / 1024;
-					$size_unit = ' MB';
-				}
-				if( $size > 1024){
-					$size = $size / 1024;
-					$size_unit = ' GB';
-				}
-				$file['size'] = number_format($size, 1, ',', '.') . $size_unit;
-				
-				$files[] = $file;
-			}
-		} finally {
-			mysqli_stmt_close($stmt);
+	if( $hasDownloadRight || $hasSuperUserRight || $hasDeletePrivateRight || $hasDeletePublicRight){
+		$sql = 'SELECT uuid, upload_time_stamp, owner, file_name, size_bytes, is_public FROM files';
+		if( !$hasSuperUserRight)
+		{
+			$sql .= ' WHERE owner = ? OR is_public = 1';
 		}
-	}else{
-		echo mysqli_error($link);
+		$sql .= ' ORDER BY upload_time_stamp';
+		if($stmt = mysqli_prepare($link, $sql)){
+			try{
+				if( !$hasSuperUserRight){
+					mysqli_stmt_bind_param($stmt, "i", getCurrentUserId());
+				}
+				mysqli_stmt_execute($stmt);
+				$res = mysqli_stmt_get_result($stmt);
+				while($file = mysqli_fetch_array($res)) {
+					$size = $file['size_bytes'] * 1;
+					$size_unit = ' Byte';
+					if( $size >= 1024){
+						$size = $size / 1024;
+						$size_unit = ' kB';
+					}
+					if( $size >= 1024){
+						$size = $size / 1024;
+						$size_unit = ' MB';
+					}
+					if( $size >= 1024){
+						$size = $size / 1024;
+						$size_unit = ' GB';
+					}
+					$file['size'] = number_format($size, 1, ',', '.') . $size_unit;
+					
+					$files[] = $file;
+				}
+			} finally {
+				mysqli_stmt_close($stmt);
+			}
+		}else{
+			echo mysqli_error($link);
+		}
 	}
 ?>
 <html>
@@ -91,8 +98,10 @@
 	function uploadFileHandler() {
 		getElement('progressDiv').style.display='block';
 		var file = getElement("uploadingfile").files[0];
+		var isPublic = getElement("ispublicfile");
 		var formdata = new FormData();
 		formdata.append("uploadingfile", file);
+		formdata.append("ispublic", isPublic.checked);
 		var ajax = new XMLHttpRequest();
 		ajax.upload.addEventListener("progress", progressHandler, false);
 		ajax.addEventListener("load", completeHandler, false);
@@ -117,10 +126,11 @@
 		getElement("progressBar").style.width = 0;
 		getElement("progressDescription").innerHTML = '';
 		getElement('progressDiv').style.display = 'none';
+		//getElement("status").innerHTML = event.target.responseText;
 		location.reload();	
 	}
 	function errorHandler(event) {
-		getElement("status").innerHTML = "Upload Failed";
+		getElement("status").innerHTML = "Upload Failed " + event.target.responseText;
 	}
 	function abortHandler(event) {
 		getElement("status").innerHTML = "Upload Aborted";
@@ -136,7 +146,7 @@
 			</div>
 		</div>
 	</div>
-	<div class='row justify-content-center'>
+	<div class="row justify-content-center" style="max-height: calc(100% - 280px); overflow-y: auto;">
 		<div class='row-column col-md-12'>
 			<table class="table table-striped files-table">
 				<colgroup>
@@ -160,13 +170,21 @@
 				
 					foreach($files as $row ){
 					echo '<tr>';
-					echo '	<td><span class="glyphicon glyphicon-lock"></span></td>';
+					if($row['is_public']){
+						echo '	<td><span class="glyphicon glyphicon-globe"></span></td>';
+					}else{
+						echo '	<td><span class="glyphicon glyphicon-lock"></span></td>';
+					}
 					echo '	<td>' . date_format(date_create($row['upload_time_stamp']), "d.m.Y H:i:s") . '</td>';
 					echo '	<td>' . $row['file_name'] . '</td>';
 					echo '	<td style="text-align: right">' . $row['size'] . '</td>';
 					echo '	<td>';
-					echo '		<a href="file_delete.php?id=' . $row['file_name'] . '" title="Datei herunterladen"><span class="glyphicon glyphicon-download"></span></a>';
-					echo '		<a style="float: right" href="file_delete.php?id=" title="Datei löschen"><span class="glyphicon glyphicon-trash"></span></a>';
+					if( $hasDownloadRight){
+						echo '		<a href="/_files/' . $row['uuid'] . '"' . ' download="' . $row['file_name'] . '" title="Datei herunterladen"><span class="glyphicon glyphicon-download"></span></a>';
+					}
+					if( (!$row['is_public'] && $hasDeletePrivateRight) || ($row['is_public'] && $hasDeletePublicRight)){
+						echo '		<a style="float: right" href="file_delete.php?id=' . $row['uuid'] . '" title="Datei löschen"><span class="glyphicon glyphicon-trash"></span></a>';
+					}
 					echo '	</td>';
 					echo '</tr>';
 					}					
@@ -184,17 +202,19 @@
 		echo '<div class="row justify-content-center">';
 		echo '	<div class="row-column col-md-12">';
 		echo '		<form id="upload_form" enctype="multipart/form-data" method="post">';
-		echo '			<div class="form-group">';
+		echo '			<div class="row">';
+		echo '			<div class="form-group col-md-2">';
 		echo '				<input type="checkbox" name="ispublicfile" id="ispublicfile"/>';
 		echo '				<label for="ispublicfile">öffentliche Datei</label>';
 		echo '			</div>';
-		echo '			<div class="form-group">';
+		echo '			<div class="form-group col-md-8">';
 		echo '				<input type="file" name="uploadingfile" id="uploadingfile"/>';
 		echo '			</div>';
-		echo '			<div class="form-group">';
+		echo '			<div class="form-group col-md-2">';
 		echo '				<input class="btn btn-primary" type="button" value="Hochladen" name="btnSubmit"';
 		echo '					   onclick="uploadFileHandler()">';
-		echo '				</div>';
+		echo '			</div>';
+		echo '			</div>';
 		echo '			<div class="form-group">';
 		echo '				<div class="progress" id="progressDiv" style="display:block" >';
 		echo '					<span id="progressDescription" style="color:black;position:absolute;text-align:center;width:100%">';
