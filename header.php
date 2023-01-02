@@ -14,6 +14,7 @@
   
   <?php
     echo '<link rel="stylesheet" href="' . $root_page . '/css/bootstrap.min.css">';
+    echo '<link rel="stylesheet" href="' . $root_page . '/css/fontawesome.min.css">';
 	echo '<link rel="stylesheet" href="' . $root_page . '/css/main.css">';
 	echo '<script type="text/javascript" src="' . $root_page . '/js/main.js"></script>';
   ?> 
@@ -25,7 +26,7 @@
 		<div class="topnav-right">
 			<div class="dropdown">
 				<button class="dropbtn"><?php echo getCurrentUserLogin();?>
-					<i class="glyphicon glyphicon-menu-down"></i>
+					<i class="fa fa-chevron-down"></i>
 				</button>
 				<div class="dropdown-content">
 					<?php

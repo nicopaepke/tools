@@ -69,6 +69,7 @@
 <head>
   <title>Registrierung</title>    
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -131,7 +132,7 @@
 				<div class="form-group">
 					<label for="confirm_password">Passwort wiederholen</label>
 					<span hidden id="confirm-password-error">
-					<span class="glyphicon glyphicon-alert"></span>
+					<span class="fa fa-triangle-exclamation"></span>
 					</span>
 					<div>
 						<input id="confirm-password-field" type="password" name="confirm_password" class="form-control" value="" onkeyup="check_pass(); required">

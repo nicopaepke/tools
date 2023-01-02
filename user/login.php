@@ -38,6 +38,7 @@
 <head>
   <title>Login</title>    
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -71,7 +72,7 @@
 					<label for="password">Passwort</label>
 					<div>
 						<input id="password-field" style="margin-right: -4px; display: inline-block" type="password" name="password" class="form-control" value="">
-						<i id="password-toggle" style="cursor: pointer; display: inline-block; margin-left: -30px;" class="glyphicon glyphicon-eye-close"></i>
+						<i id="password-toggle" style="cursor: pointer; display: inline-block; margin-left: -30px;" class="fa fa-eye-slash"></i>
 					</div>
 				</div>
 				 
@@ -95,8 +96,8 @@ togglePassword.addEventListener('click', function () {
     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
     password.setAttribute('type', type);
 
-    this.classList.toggle('glyphicon-eye-open');
-	this.classList.toggle('glyphicon-eye-close');
+    this.classList.toggle('fa-eye-slash');
+	this.classList.toggle('fa-eye');
 });
 </script>
 

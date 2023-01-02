@@ -1,13 +1,13 @@
 <?php
 	// application settings
-	$root_page = "";
-	$file_share_directory = "";
+	$root_page = "/tools";
+	$file_share_directory = "e:\\temp\\";
 	
 	// databaseconnection
-	$db_servername = "";
-	$db_username = "";
+	$db_servername = "localhost";
+	$db_username = "root";
 	$db_password = "";
-	$db_name = "";
+	$db_name = "tools";
 	
 	// smtp server settings	
 	$smtp_host = "";

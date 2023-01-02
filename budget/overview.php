@@ -37,6 +37,7 @@
 <head>
   <title>Login</title>    
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -77,7 +78,7 @@
 							echo '<td>' . date_format(date_create($row['input_date']), "d.m.Y H:i:s") . '</td>';				
 							echo '<td>';
 							if( $hasEditRight){
-								echo '<a href="buchung_delete.php?id=' . $row['id'] . '" title="Buchung löschen"><span class="glyphicon glyphicon-trash"></span></a>';
+								echo '<a href="buchung_delete.php?id=' . $row['id'] . '" title="Buchung löschen"><span class="fa fa-trash-can"></span></a>';
 							}
 							echo '</td>';				
 						echo '</tr>';

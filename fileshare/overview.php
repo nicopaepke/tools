@@ -70,6 +70,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   
 <!--  
@@ -171,19 +172,19 @@
 					foreach($files as $row ){
 					echo '<tr>';
 					if($row['is_public']){
-						echo '	<td><span class="glyphicon glyphicon-globe"></span></td>';
+						echo '	<td><span class="fa fa-globe"></span></td>';
 					}else{
-						echo '	<td><span class="glyphicon glyphicon-lock"></span></td>';
+						echo '	<td><span class="fa fa-key"></span></td>';
 					}
 					echo '	<td>' . date_format(date_create($row['upload_time_stamp']), "d.m.Y H:i:s") . '</td>';
 					echo '	<td>' . $row['file_name'] . '</td>';
 					echo '	<td style="text-align: right">' . $row['size'] . '</td>';
 					echo '	<td>';
 					if( $hasDownloadRight){
-						echo '		<a href="/_files/' . $row['uuid'] . '"' . ' download="' . $row['file_name'] . '" title="Datei herunterladen"><span class="glyphicon glyphicon-download"></span></a>';
+						echo '		<a href="/_files/' . $row['uuid'] . '"' . ' download="' . $row['file_name'] . '" title="Datei herunterladen"><span class="fa fa-download"></span></a>';
 					}
 					if( (!$row['is_public'] && $hasDeletePrivateRight) || ($row['is_public'] && $hasDeletePublicRight)){
-						echo '		<a style="float: right" href="file_delete.php?id=' . $row['uuid'] . '" title="Datei löschen"><span class="glyphicon glyphicon-trash"></span></a>';
+						echo '		<a style="float: right" href="file_delete.php?id=' . $row['uuid'] . '" title="Datei löschen"><span class="fa fa-trash-can"></span></a>';
 					}
 					echo '	</td>';
 					echo '</tr>';

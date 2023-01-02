@@ -2,6 +2,7 @@
 <head>
   <title>Rechteverwaltung</title>    
   <link rel='stylesheet' href='../css/bootstrap.min.css'>
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel='stylesheet' href='../css/main.css'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
   <script>
@@ -96,7 +97,7 @@
 		<?php
 			foreach($users as $user_id=>$user){
 				echo '<div class="accordion" onClick="clickAccordion(this)">'
-					. '<span class="glyphicon glyphicon-menu-down"></span>'
+					. '<span class="fa fa-chevron-down"></span>'
 					. $user['name'] . ' (' . $user['login'] . ')</div>';
 				echo '<div class="panel">';
 				echo '<h4>Benutzer Informationen</h4>';
@@ -142,7 +143,7 @@
 			}
 			echo '</br>';		
 			echo '<div class="accordion" onClick="clickAccordion(this)">'
-					. '<span class="glyphicon glyphicon-menu-down"></span>'
+					. '<span class="fa fa-chevron-down"></span>'
 					. 'Übersicht Brechtigungen</div>';			
 			echo '<div style="overflow-x: auto;" class="panel">';
 			echo '<table class="table table-bordered table-striped">';
@@ -164,12 +165,12 @@
 					foreach($module_rights as $module=>$rights){
 						echo '<td>';
 						foreach($rights as $idx=>$right){
-							echo '<span class="permission-wrapper"><span class="permission glyphicon ';
+							echo '<span class="permission-wrapper"><span class="permission fa ';
 							if( $user_permissions[$user_id][$module][$right] == true){
-								echo 'grant glyphicon-ok';
+								echo 'grant fa-check';
 							}
 							else{
-								echo 'denied glyphicon-remove';
+								echo 'denied fa-xmark';
 							}
 							
 							echo '"></span><span>' . $right . '</span></span>';

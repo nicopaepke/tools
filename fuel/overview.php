@@ -107,8 +107,9 @@
 <html>
 
 <head>
-  <title>Login</title>    
+  <title>Login</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script>
@@ -238,7 +239,7 @@
 							echo "<td>";
 							echo "<a class='fuel-edit-button' href='entry_editor.php?id=". $row['id'];
 							echo "&id_vehicle=" . $selected_vehicle['id'] . '&vehicle_name=' . $selected_vehicle['name'];
-							echo "' title='bearbeiten'><span class='glyphicon glyphicon-edit'></span></a>";
+							echo "' title='bearbeiten'><span class='fa fa-pen-to-square'></span></a>";
 							echo date_format(date_create($row['refueling_date']), "d.m.Y") . "</td>";
 							echo "<td>" . number_format($row['odometer'], 1, ',', '.') . "</td>";
 							echo "<td>" . number_format($row['refueled'], 2, ',', '.') . "</td>";
