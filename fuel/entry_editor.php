@@ -126,11 +126,13 @@ if(isset($_GET["id"]) && !empty($_GET["id"])){
 					<label for="deleted">Status</label>
 					<select value="0" class="form-control" name="deleted" required="true">
 						<option value="0" <?php if( $deleted == 0) { echo 'selected';} ?> >aktiv</option>
-						<option value="1" <?php if( $deleted == 1) { echo 'selected';} ?>>gelöscht</option>					
+						<option value="1" <?php if( $deleted == 1) { echo 'selected';} ?>>gelöscht</option>
 					</select>
 				</div>
-				<input class="btn btn-primary" type="submit" value="Speichern">
-				<a href="overview.php" class="btn btn-default">Abrechen</a>
+				<div class="form-group" style="margin-top: 10px;">
+                    <input class="btn btn-primary" type="submit" value="Speichern">
+                    <a href="overview.php" class="btn btn-default">Abbrechen</a>
+                </div>
 			</form>
 		</div>
 	</div>

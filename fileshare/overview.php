@@ -97,7 +97,6 @@
 		return document.getElementById(abc);
 	}
 	function uploadFileHandler() {
-		getElement('progressDiv').style.display='block';
 		var file = getElement("uploadingfile").files[0];
 		var isPublic = getElement("ispublicfile");
 		var formdata = new FormData();
@@ -120,15 +119,14 @@
 		var total = event.total / 1048576;
 		var percent = Math.round((event.loaded / event.total) * 100);
 		getElement("progressBar").style.width = Math.round(percent) + "%";
-		getElement("progressDescription").innerHTML = 
-			loaded.toFixed(3) + " von " + total.toFixed(3) + " MB (" + percent + "%) mit " + mbPerSec.toFixed(2) + " MB/Sek";
+		getElement("progressBar").innerHTML = percent + "%";
+// 			loaded.toFixed(3) + " von " + total.toFixed(3) + " MB (" + percent + "%) mit " + mbPerSec.toFixed(2) + " MB/Sek";
 	}
 	function completeHandler(event) {
 		getElement("progressBar").style.width = 0;
-		getElement("progressDescription").innerHTML = '';
-		getElement('progressDiv').style.display = 'none';
+		getElement("progressBar").innerHTML = '';
 		//getElement("status").innerHTML = event.target.responseText;
-		location.reload();	
+		location.reload();
 	}
 	function errorHandler(event) {
 		getElement("status").innerHTML = "Upload Failed " + event.target.responseText;
@@ -204,12 +202,12 @@
 		echo '	<div class="row-column col-md-12">';
 		echo '		<form id="upload_form" enctype="multipart/form-data" method="post">';
 		echo '			<div class="row">';
-		echo '			<div class="form-group col-md-2">';
-		echo '				<input type="checkbox" name="ispublicfile" id="ispublicfile"/>';
-		echo '				<label for="ispublicfile">öffentliche Datei</label>';
+		echo '			<div class="form-group col-md-7">';
+		echo '				<input class="form-control" type="file" name="uploadingfile" id="uploadingfile"/>';
 		echo '			</div>';
-		echo '			<div class="form-group col-md-8">';
-		echo '				<input type="file" name="uploadingfile" id="uploadingfile"/>';
+		echo '			<div class="form-group col-md-3" style="margin: auto;">';
+		echo '				<input class="form-check-input" type="checkbox" name="ispublicfile" id="ispublicfile"/>';
+		echo '				<label class="form-check-label" for="ispublicfile">öffentliche Datei</label>';
 		echo '			</div>';
 		echo '			<div class="form-group col-md-2">';
 		echo '				<input class="btn btn-primary" type="button" value="Hochladen" name="btnSubmit"';
@@ -217,11 +215,9 @@
 		echo '			</div>';
 		echo '			</div>';
 		echo '			<div class="form-group">';
-		echo '				<div class="progress" id="progressDiv" style="display:block" >';
-		echo '					<span id="progressDescription" style="color:black;position:absolute;text-align:center;width:100%">';
-		echo '					</span>';
-		echo '					<div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>';
-		echo '				</div>';
+		echo '				<div class="progress" id="progressDiv" style="display:block; margin: 20px 0;" >';
+		echo '					<div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>';
+        echo '              </div>';
 		echo '			</div>';
 		echo '			<div class="form-group">';
 		echo '				<h3 id="status"></h3>';
