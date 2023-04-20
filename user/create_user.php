@@ -138,8 +138,9 @@
 						<input id="confirm-password-field" type="password" name="confirm_password" class="form-control" value="" onkeyup="check_pass(); required">
 					</div>
 				</div>
-				 
-				<input id="submit-register" class="btn btn-primary" type="submit" value="Registrieren">
+				 <div class="form-group" style="margin-top: 10px;">
+					<input id="submit-register" class="btn btn-primary" type="submit" value="Registrieren">
+				</div
 			</form> 
 		</div>
 	</div>

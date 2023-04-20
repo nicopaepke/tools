@@ -1,6 +1,37 @@
 <?php
 	class Permission {
+			
+		private static $moduleMapping = array(
+				'USER_ADMIN' => 'Benutzerverwaltung',
+				'BUDGET' => 'Haushaltsbuch',
+				'FILESHARE' => 'Dateiaustausch',
+				'FUEL' => 'Kraftstoff'
+				);
 		
+		private static $rightMapping = array(
+				'VIEW' => 'Lesen',
+				'EDIT' => 'Schreiben',
+				'UPLOAD' => 'Hochladen',
+				'DOWNLOAD' => 'Herunterladen',
+				'DELETE_PRIVATE' => 'eigene Löschen',
+				'DELETE_PUBLIC' => 'öffentliche Löschen',
+				'SUPER_USER' => 'Superrechte'				
+				);
+				
+		function getDisplayNameForModule($module){			
+			if( array_key_exists($module, self::$moduleMapping)){
+				return self::$moduleMapping[$module];
+			}
+			return $module;
+		}
+		function getDisplayNameForRight($module){			
+			if( array_key_exists($module, self::$rightMapping)){
+				return self::$rightMapping[$module];
+			}
+			return $module;
+		}
+		
+				
 		function createPermission($link, $user, $module, $right){
 			$sql = 'INSERT INTO permissions (id_user, id_right) SELECT ?, id FROM rights WHERE module = ? AND name = ?';
 			if($stmt = mysqli_prepare($link, $sql)){

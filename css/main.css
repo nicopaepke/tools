@@ -123,9 +123,12 @@ a {
 /* permission */
 .permission-wrapper {
     margin-right: 30px;
+	white-space: nowrap;
 }
 .permission {
     margin-right: 8px;
+	width: 16px;
+    text-align: center;
 }
 span.permission.grant {
     color: green;
@@ -138,9 +141,6 @@ span.permission.denied {
 }
 .permission-row {
 	padding-top: 6px;
-}
-.permission-label {
-	font-weight: normal;
 }
 
 

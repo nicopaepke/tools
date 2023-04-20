@@ -23,10 +23,17 @@
 		
 	$files = [];
 	if( $hasDownloadRight || $hasSuperUserRight || $hasDeletePrivateRight || $hasDeletePublicRight){
-		$sql = 'SELECT uuid, upload_time_stamp, owner, file_name, size_bytes, is_public FROM files';
+		$sql = 'SELECT uuid, upload_time_stamp, file_name, size_bytes, is_public ';
+		if( $hasSuperUserRight){
+			$sql .= ', users.name as owner_name ';
+		}
+		$sql .= 'FROM files';
 		if( !$hasSuperUserRight)
 		{
 			$sql .= ' WHERE owner = ? OR is_public = 1';
+		}
+		else {
+			$sql .= ' LEFT JOIN users ON users.id = files.owner';
 		}
 		$sql .= ' ORDER BY upload_time_stamp';
 		if($stmt = mysqli_prepare($link, $sql)){
@@ -151,6 +158,7 @@
 				<colgroup>
 					<col style="width: 25px" />
 					<col style="" />
+					<?php if($hasSuperUserRight) echo '<col style="" />';?>
 					<col style="" />
 					<col style="width: 120px" />
 					<col style="width: 60px" />
@@ -159,6 +167,7 @@
 					<tr>
 						<th></th>
 						<th>Datum</th>
+						<?php if($hasSuperUserRight) echo '<th>Benutzer</th>';?>
 						<th>Dateiname</th>
 						<th style="text-align: right">Größe</th>
 						<th>Aktion</th>
@@ -175,6 +184,9 @@
 						echo '	<td><span class="fa fa-key"></span></td>';
 					}
 					echo '	<td>' . date_format(date_create($row['upload_time_stamp']), "d.m.Y H:i:s") . '</td>';
+					if($hasSuperUserRight){
+						echo '	<td>' . $row['owner_name'] . '</td>';
+					}
 					echo '	<td>' . $row['file_name'] . '</td>';
 					echo '	<td style="text-align: right">' . $row['size'] . '</td>';
 					echo '	<td>';

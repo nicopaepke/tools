@@ -123,18 +123,19 @@
 					foreach($module_rights as $module=>$rights){
 						echo '<div class="row permission-row">';
 						echo '<div class="col-xs-4">';
-						echo '<p><b>' . $module . ':</b></p>';
+						echo '<p><b>' . $permission->getDisplayNameForModule($module) . ':</b></p>';
 						echo '</div>';
 						echo '<div class="col-xs-5">';
 							foreach($rights as $idx=>$right){
 								$inputkey = $user_id . '#*#' . $module . '#*#' . $right;
-								echo '<span class="permission"><input name="' .  $inputkey . '" id="' . $inputkey .'" type="checkbox" ';
+								echo '<span class="form-check form-check-inline"><input class="form-check-input" name="' .  $inputkey . '" id="' . $inputkey .'" type="checkbox" ';
 								if( $user_permissions[$user_id][$module][$right] == true){
 									echo 'checked';
 								}
-								echo '><label class="permission-label" for="' . $inputkey . '">' . $right . '</label></span>';
+								echo '><label class="form-check-label" for="' . $inputkey . '">' . $permission->getDisplayNameForRight($right) . '</label></span>';
 							}
 						echo '</div>';
+						echo '<hr/>';
 						echo '</div>';				
 					}					
 					
@@ -152,7 +153,7 @@
 						echo '<th>#</th>';
 						echo '<th>Name</th>';
 						foreach($module_rights as $module=>$rights){						
-							echo '<th>' . $module . '</th>';
+							echo '<th>' . $permission->getDisplayNameForModule($module) . '</th>';
 						}
 					echo '</tr>';
 				echo '</thead>';
@@ -170,10 +171,10 @@
 								echo 'grant fa-check';
 							}
 							else{
-								echo 'denied fa-xmark';
+								echo 'denied fa-times';
 							}
 							
-							echo '"></span><span>' . $right . '</span></span>';
+							echo '"></span><span>' . $permission->getDisplayNameForRight($right) . '</span></span>';
 						}
 						echo '</td>';
 					}

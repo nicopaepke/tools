@@ -71,12 +71,14 @@
 				<div class="form-group">
 					<label for="password">Passwort</label>
 					<div>
-						<input id="password-field" style="margin-right: -4px; display: inline-block" type="password" name="password" class="form-control" value="">
-						<i id="password-toggle" style="cursor: pointer; display: inline-block; margin-left: -30px;" class="fa fa-eye-slash"></i>
+						<input id="password-field" style="display: inline-block" type="password" name="password" class="form-control" value="">
+						<i id="password-toggle" style="cursor: pointer; margin-left: -30px; margin-top: 11px; position: absolute;" class="fa fa-eye-slash"></i>
 					</div>
 				</div>
 				 
-				<input class="btn btn-primary" type="submit" value="Login">
+				<div class="form-group" style="margin-top: 10px;">
+					<input class="btn btn-primary" type="submit" value="Login">
+                </div>
 			</form> 
 		</div>
 	</div>
