@@ -41,7 +41,17 @@
   <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <style>
+    #password-field {
+        display: inline-block;
+    }
+    #password-toggle {
+        cursor: pointer;
+        margin-left: -30px;
+        margin-top: 11px;
+        position: absolute;
+    }
+  </style>
 </head>
 <body>
 
@@ -49,34 +59,32 @@
 <div class="container-fluid">
 	<div class="row justify-content-center">
 		<div class="row-column col-md-4">	
-			<div class="page-header">
-					<h2>Anmeldung</h2>
-			</div>
+			<div class="page-header"><h2>Anmeldung</h2></div>
 		</div>
 	</div>
 	<div class="row justify-content-center">
-		<div class="row-column col-md-4">	
+		<div class="row-column col-md-4">
 			<?php 
 			if(isset($errorMessage)) {
 				echo '<p class="error-message">' . $errorMessage . '</p>';
 			}
 			?>
 			<form action="?login" method="post">
-				<div class="form-group">
+				<div class="mb-2">
 					<label for="username">Benutzername oder E-Mail Adresse</label>
 					<input type="text" name="username" class="form-control" 
 						value="">
 				</div>
 				 
-				<div class="form-group">
+				<div class="mb-2">
 					<label for="password">Passwort</label>
 					<div>
-						<input id="password-field" style="display: inline-block" type="password" name="password" class="form-control" value="">
-						<i id="password-toggle" style="cursor: pointer; margin-left: -30px; margin-top: 11px; position: absolute;" class="fa fa-eye-slash"></i>
+						<input id="password-field" type="password" name="password" class="form-control" value="">
+						<i id="password-toggle" class="fa fa-eye-slash"></i>
 					</div>
 				</div>
 				 
-				<div class="form-group" style="margin-top: 10px;">
+				<div class="mb-2">
 					<input class="btn btn-primary" type="submit" value="Login">
                 </div>
 			</form> 

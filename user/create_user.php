@@ -102,34 +102,36 @@
 					echo '<p class="error-message">Registierung fehlgeschlagen: ' . $error_message . '</p>';
 				}
 			?>				
-			<form style="<?php if(!$show_success) echo "display: none";?>"
-				action="?redirect" method="post">
-				<p>Registrierung war erfolgreich.</p>
-				<p>Sobald Sie freigeschaltet werden, bekommen Sie eine E-Mail.</p>
-				<input class="btn btn-primary" type="submit" value="OK">
+			<form style="<?php if(!$show_success) echo 'display: none';?>" action="?redirect" method="post">
+				<div class="mb-2">
+                    <p>Registrierung war erfolgreich.</p>
+                    <p>Sobald Sie freigeschaltet werden, bekommen Sie eine E-Mail.</p>
+				</div>
+				<div class="mb-2">
+					<input class="btn btn-primary" type="submit" value="OK">
+                </div>
 			</form> 
 			
-			<form style="<?php if(!$show_register) echo "display: none";?>"
-				action="?register" method="post">
-				<div class="form-group">
+			<form style="<?php if(!$show_register) echo 'display: none';?>" action="?register" method="post">
+				<div class="mb-2">
 					<label for="username">Benutzername</label>
 					<input type="text" name="username" class="form-control" value="" required>
 				</div>
-				<div class="form-group">
+				<div class="mb-2">
 					<label for="name">Name</label>
 					<input type="text" name="name" class="form-control" value="" required>
 				</div>
-				<div class="form-group">
+				<div class="mb-2">
 					<label for="name">E-Mail Adresse</label>
 					<input type="text" name="mailaddress" class="form-control" value="" required>
-				</div>				 
-				<div class="form-group">
+				</div>
+				<div class="mb-2">
 					<label for="password">Passwort</label>
 					<div>
 						<input id="password-field" type="password" name="password" class="form-control" value="" onkeyup="check_pass();" required>
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="mb-2">
 					<label for="confirm_password">Passwort wiederholen</label>
 					<span hidden id="confirm-password-error">
 					<span class="fa fa-triangle-exclamation"></span>
@@ -138,9 +140,9 @@
 						<input id="confirm-password-field" type="password" name="confirm_password" class="form-control" value="" onkeyup="check_pass(); required">
 					</div>
 				</div>
-				 <div class="form-group" style="margin-top: 10px;">
+				 <div class="mb-2">
 					<input id="submit-register" class="btn btn-primary" type="submit" value="Registrieren">
-				</div
+				</div>
 			</form> 
 		</div>
 	</div>
