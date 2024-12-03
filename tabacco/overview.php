@@ -11,19 +11,23 @@
 		exit();
 	}
 	
-	$sql = "SELECT tabacco_box.id, brand, contents, expected_cigarettes, price, tabacco_box.started_at, tabacco_box.finished_at, SUM(quantity) AS produced FROM tabacco_box LEFT JOIN cigarette_production ON cigarette_production.id_tabacco_box = tabacco_box.id ORDER BY started_at DESC";
+	$sql = "SELECT tabacco_box.id, brand, contents, expected_cigarettes, price, tabacco_box.started_at, tabacco_box.finished_at, SUM(quantity) AS produced FROM tabacco_box LEFT JOIN cigarette_production ON cigarette_production.id_tabacco_box = tabacco_box.id GROUP BY tabacco_box.id ORDER BY started_at DESC";
 	$boxes = [];
 	
-	if($result = mysqli_query($link, $sql)){
-		if(mysqli_num_rows($result) > 0){
-			while($row = mysqli_fetch_array($result)){
-					$boxes[] = $row;
+	if($stmt = mysqli_prepare($link, $sql)){
+		try{
+			mysqli_stmt_execute($stmt);
+			$res = mysqli_stmt_get_result($stmt);
+			while($row = mysqli_fetch_array($res)) {
+				$boxes[] = $row;
 			}
+		} finally {
+			mysqli_stmt_close($stmt);
 		}
-		mysqli_free_result($result);
-	} else{
-		echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
+	}else{
+		echo mysqli_error($link);
 	}
+	
 	foreach($boxes as &$box){
 		$box['percentage'] = 0;
 		$box['cig_price'] = '-';
@@ -91,11 +95,14 @@
 		
 		
 		echo '</div><hr class="separator"/><div class="row button-list" align="right"><div class="col-12">';
-		echo '<a id="add-production-button" href="production.php?id_box=' . $box['id'] . '" class="btn btn-primary">+ Produktion</a>';
-		echo '<a id="close-button" href="close_box.php?id_box=' . $box['id'] . '" class="btn btn-primary">Beenden</a>';
+		if( $box['finished_at'] == null){
+			echo '<a id="add-production-button" href="production.php?id_box=' . $box['id'] . '" class="btn btn-primary">+ Produktion</a>';
+			echo '<a id="close-button" href="close_box.php?id_box=' . $box['id'] . '" class="btn btn-primary">Beenden</a>';
+		}
 		echo '</div></div></div>';
 	}
 ?>
+	<a id="add-button" href="create_box.php" class="btn btn-primary">Neue Box</a>
 	
 </div>
 
