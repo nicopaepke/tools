@@ -15,7 +15,8 @@
 				'DOWNLOAD' => 'Herunterladen',
 				'DELETE_PRIVATE' => 'eigene Löschen',
 				'DELETE_PUBLIC' => 'öffentliche Löschen',
-				'SUPER_USER' => 'Superrechte'				
+				'SUPER_USER' => 'Superrechte',
+				'USE' => 'Verwenden'
 				);
 				
 		function getDisplayNameForModule($module){			

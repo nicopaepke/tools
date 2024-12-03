@@ -185,3 +185,26 @@ span.permission.denied {
 .budget-table .value-col {
 	text-align: right;
 }
+
+/* tabacco */
+.tabacco .tabacco-box p {
+	margin-bottom: 4px;
+}
+
+.tabacco-box {
+	border: 2px solid #ddd;
+	padding: 2px 6px;
+	margin-bottom: 10px;
+}
+
+.tabacco-box .separator {
+	margin: 8px 0;
+}
+
+.tabacco-box .button-list {
+	margin-bottom: 4px;
+}
+
+.tabacco-box .button-list a{
+	margin-left: 6px;
+}
