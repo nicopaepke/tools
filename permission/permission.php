@@ -5,7 +5,8 @@
 				'USER_ADMIN' => 'Benutzerverwaltung',
 				'BUDGET' => 'Haushaltsbuch',
 				'FILESHARE' => 'Dateiaustausch',
-				'FUEL' => 'Kraftstoff'
+				'FUEL' => 'Kraftstoff',
+				'TABACCO' => 'Tabak'
 				);
 		
 		private static $rightMapping = array(

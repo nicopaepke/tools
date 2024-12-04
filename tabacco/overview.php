@@ -150,5 +150,7 @@
 		echo '</div>';
 	}
 ?>	
+	<a id="add-button" href="create_box.php" class="btn btn-primary">Neue Box</a>
+
 </body>
 </html>
