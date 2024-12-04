@@ -10,16 +10,48 @@
 		include '../access_denied.html';
 		exit();
 	}
-	
-	$sql = "SELECT tabacco_box.id, brand, contents, expected_cigarettes, price, tabacco_box.started_at, tabacco_box.finished_at, SUM(quantity) AS produced FROM tabacco_box LEFT JOIN cigarette_production ON cigarette_production.id_tabacco_box = tabacco_box.id GROUP BY tabacco_box.id ORDER BY started_at DESC";
 	$boxes = [];
-	
+	$productions = [];
+		
+	$sql = "SELECT started_at, finished_at, quantity, id_tabacco_box FROM cigarette_production ORDER BY started_at DESC";
+		
 	if($stmt = mysqli_prepare($link, $sql)){
 		try{
 			mysqli_stmt_execute($stmt);
 			$res = mysqli_stmt_get_result($stmt);
-			while($row = mysqli_fetch_array($res)) {
-				$boxes[] = $row;
+			while($production = mysqli_fetch_array($res)) {
+				$duration = date_create($production['finished_at'])->diff(date_create($production['started_at']));
+				$production['duration'] = str_pad($duration->h * 60 + $duration->i, 2, '0', STR_PAD_LEFT) . ':' . str_pad($duration->s, 2, '0', STR_PAD_LEFT);
+				$production['performance'] = ($duration->h * 60 * 60 + $duration->i * 60 + $duration->s) / $production['quantity'];
+				if( !array_key_exists($production['id_tabacco_box'], $productions)){
+				$productions[$production['id_tabacco_box']] = [];
+			}
+				array_push($productions[$production['id_tabacco_box']], $production);
+			}
+		} finally {
+			mysqli_stmt_close($stmt);
+		}
+	}else{
+		echo mysqli_error($link);
+	}
+
+	$sql = "SELECT tabacco_box.id, brand, contents, expected_cigarettes, price, tabacco_box.started_at, tabacco_box.finished_at, SUM(quantity) AS produced FROM tabacco_box LEFT JOIN cigarette_production ON cigarette_production.id_tabacco_box = tabacco_box.id GROUP BY tabacco_box.id ORDER BY started_at DESC";
+		
+	if($stmt = mysqli_prepare($link, $sql)){
+		try{
+			mysqli_stmt_execute($stmt);
+			$res = mysqli_stmt_get_result($stmt);
+			while($box = mysqli_fetch_array($res)) {
+				$box['percentage'] = 0;
+				$box['cig_price'] = '-';
+				if( $box['expected_cigarettes'] != 0){
+					$box['percentage'] = round($box['produced'] / $box['expected_cigarettes'] * 100, 2);
+				}
+				if( $box['produced'] != 0){
+					$box['cig_price'] = round($box['price'] / $box['produced'] * 100, 1);
+				}
+				$box['productions'] = [];
+				$boxes[] = $box;
 			}
 		} finally {
 			mysqli_stmt_close($stmt);
@@ -28,16 +60,6 @@
 		echo mysqli_error($link);
 	}
 	
-	foreach($boxes as &$box){
-		$box['percentage'] = 0;
-		$box['cig_price'] = '-';
-		if( $box['expected_cigarettes'] != 0){
-			$box['percentage'] = round($box['produced'] / $box['expected_cigarettes'] * 100, 2);
-		}
-		if( $box['produced'] != 0){
-			$box['cig_price'] = round($box['price'] / $box['produced'] * 100, 1);
-		}
-	}
 ?>
 <html>
 
@@ -47,6 +69,16 @@
   <link rel="stylesheet" href="../css/fontawesome.min.css">
   <link rel="stylesheet" href="../css/main.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <script>
+	function collapseExpand( box_id){
+		if( document.getElementById('production-' + box_id).style.display == 'none'){
+			document.getElementById('production-' + box_id).style.display = null;
+		}else{
+			document.getElementById('production-' + box_id).style.display = 'none';
+		}
+	}
+  </script>
 </head>
 <body>
 <div class='container-fluid tabacco'>
@@ -95,17 +127,28 @@
 		
 		
 		echo '</div><hr class="separator"/><div class="row button-list" align="right"><div class="col-12">';
-		if( $box['finished_at'] == null){
+		echo '<a style="float: left;" id="detail-button-' . $box['id'] . '" onClick="collapseExpand(' . $box['id'] . ');" class="btn btn-primary">Details</a>';
+		if( $box['finished_at'] == null){			
 			echo '<a id="add-production-button" href="production.php?id_box=' . $box['id'] . '" class="btn btn-primary">+ Produktion</a>';
 			echo '<a id="close-button" href="close_box.php?id_box=' . $box['id'] . '" class="btn btn-primary">Beenden</a>';
 		}
-		echo '</div></div></div>';
-	}
-?>
-	<a id="add-button" href="create_box.php" class="btn btn-primary">Neue Box</a>
-	
-</div>
+		echo '</div></div>';
+		
+		echo '<div style="display: none" id="production-' . $box['id'] . '" class="row"><div class="col-12">';
+		echo '<table class="table table-striped production-table"><thead><tr>';
+		echo '<th style="text-align: left;">Zeitraum</th><th>Dauer</th><th>Anzahl</th><th>&#8960</th></tr></thead><tbody>';
 
-	
+		foreach($productions[$box['id']] as $production){
+			echo "<tr>";
+				echo '<td style="text-align: left;">' . date_format(date_create($production['started_at']), "d.m.y H:i:s") . " - " . date_format(date_create($production['finished_at']), "d.m.y H:i:s") . "</td>";
+				echo '<td>' . $production['duration'] . "</td>";
+				echo '<td>' . $production['quantity'] . "</td>";
+				echo '<td>' . number_format($production['performance'],1) . "</td>";
+			echo "</tr>";
+		}	
+		echo '</tbody></table></div></div>';
+		echo '</div>';
+	}
+?>	
 </body>
 </html>

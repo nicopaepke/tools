@@ -215,3 +215,6 @@ span.permission.denied {
 	margin: 0;
 	border: 1 px solid #1165ab;
 }
+.production-table td, .production-table th{
+	text-align: right;
+}
