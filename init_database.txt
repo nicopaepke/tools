@@ -33,4 +33,4 @@ ALTER TABLE `files` ADD `size_bytes` BIGINT UNSIGNED NULL DEFAULT NULL, ADD `is_
 
 INSERT INTO `rights` ( `module`, `name`) VALUES('TABACCO', 'USE');
 CREATE TABLE `tabacco_box`( `id` INT NOT NULL AUTO_INCREMENT , `brand` VARCHAR(255) NOT NULL, `contents` int NOT NULL, `expected_cigarettes` int NOT NULL, `price` DECIMAL(10,2) NOT NULL, `started_at` DATETIME NOT NULL, `finished_at` DATETIME NULL, PRIMARY KEY (`id`));
-CREATE TABLE `cigarette_production`( `id` INT NOT NULL AUTO_INCREMENT , `id_tabacco_box` INT NOT NULL, `quantity` int NOT NULL, `started_at` DATETIME NOT NULL, `finished_at` DATETIME NULL, PRIMARY KEY (`id`));
+CREATE TABLE `cigarette_production`( `id` INT NOT NULL AUTO_INCREMENT , `id_tabacco_box` INT NOT NULL, `quantity` int NOT NULL, `started_at` DATETIME NOT NULL, `finished_at` DATETIME NOT NULL, PRIMARY KEY (`id`));

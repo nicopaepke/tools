@@ -208,3 +208,10 @@ span.permission.denied {
 .tabacco-box .button-list a{
 	margin-left: 6px;
 }
+#duration {
+	font-size: 26px; 
+	font-weight: bold; 
+	color: #1165ab;
+	margin: 0;
+	border: 1 px solid #1165ab;
+}

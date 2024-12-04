@@ -10,26 +10,24 @@ if( !$permission->hasPermissionForModule($link, getCurrentUserLogin(), 'TABACCO'
 	exit();
 }
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-	/*
-	$sql = "INSERT INTO tabacco_box (brand, contents, expected_cigarettes, price, started_at) VALUES (?, ?, ?, ?, ?)";
+if($_SERVER["REQUEST_METHOD"] == "POST"){	
+
+	$sql = "INSERT INTO cigarette_production (id_tabacco_box, quantity, started_at, finished_at) VALUES (?, ?, ?, ?)";
 	if($stmt = mysqli_prepare($link, $sql)){
-		mysqli_stmt_bind_param($stmt, "siids", $param_brand, $param_contents, $param_expected, $param_price, $param_started);
-		$param_brand = $_POST['brand'];
-		$param_contents = $_POST['contents'];
-		$param_expected = $_POST['quantity'];
-		$param_price = $_POST['price'];
+		mysqli_stmt_bind_param($stmt, "iiss", $param_tabacco_box, $param_quantity, $param_started, $param_finished);
+		$param_tabacco_box = $_GET["id_box"];
+		$param_quantity = $_POST['quantity'];
 		$param_started = $_POST['begin'];
+		$param_finished = $_POST['end'];
 		if(mysqli_stmt_execute($stmt)){        
-			//header("location: overview.php");
-			//exit();
+			header("location: overview.php");
+			exit();
 		} else{
 			echo 'Something went wrong. Please try again later.';
 		}
 		mysqli_stmt_close($stmt);
-	}	
-	*/
+	}
 }
 
 ?>
@@ -41,12 +39,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <script>
+	var interval;
 	function start() {
-		document.getElementById('start-input').value = new Date(Date.now()).toISOString();
+		const now = new Date(Date.now());
+		document.getElementById('start-input').value = now.toISOString();
+		document.getElementById('start-display').value = formatDateTime(now);
 		document.getElementById('start-button').disabled = true;
-		document.getElementById('quantity-input').disabled = true;
+		document.getElementById('quantity-input').readOnly = true;
 		document.getElementById('stop-button').disabled = false;
-		setInterval(function() {
+		
+		interval = setInterval(function() {
 			var startValue = document.getElementById('start-input').value;
 			var endValue = document.getElementById('end-input').value;
 			
@@ -60,6 +62,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			var minutes = 0;
 			var seconds = 0;
 			if( startValue){
+			
 				const diff = ((end - new Date(startValue)) / 1000 / 60);
 				hours = Math.floor(diff / 60);
 				minutes = Math.floor((diff - (60 * hours)));
@@ -76,12 +79,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				seconds = "0" + seconds;
 			}
 			document.getElementById('duration').innerHTML = hours + ":" + minutes + ":" + seconds;
-			//console.log(hours + ":" + minutes + ":" + seconds);
 		}, 500);
 	}
+	function formatDateTime( value){
+		const offset = value.getTimezoneOffset(); // Offset in Minuten
+		const localTime = new Date(value.getTime() - offset * 60000); // Offset berücksichtigen
+		const day = String(localTime.getDate()).padStart(2, '0');
+		const month = String(localTime.getMonth() + 1).padStart(2, '0'); // Monate starten bei 0
+		const year = localTime.getFullYear();
+		const hours = String(localTime.getHours()).padStart(2, '0');
+		const minutes = String(localTime.getMinutes()).padStart(2, '0');
+		const seconds = String(localTime.getSeconds()).padStart(2, '0');
+
+		return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+	}
 	function stop() {
-		document.getElementById('end-input').value = new Date(Date.now()).toISOString();
+		const now = new Date(Date.now());
+		document.getElementById('end-input').value = now.toISOString();
+		document.getElementById('end-display').value = formatDateTime(now);
 		document.getElementById('stop-button').disabled = true;
+		document.getElementById('save-button').disabled = false;
+		clearInterval(interval);
 	}
 	function onChangeQuantity(){
 		document.getElementById('start-button').disabled = !(document.getElementById('quantity-input').value > 0);
@@ -100,28 +118,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	</div>
 	<div class="row justify-content-center">
 		<div class="row-column col-md-4">
-			<form action="?create" method="post">
+			
+			<?php
+				echo '<form action="';
+				echo htmlspecialchars($_SERVER["PHP_SELF"]);
+				echo '?id_box=' . $_GET["id_box"];
+				echo '" method="post">';
+			?>
 				<div class="form-group">
 					<label for="quantity">Zigaretten</label>
 					<input id="quantity-input" onkeyup="onChangeQuantity();" type="number" name="quantity" class="form-control" value="" required>
-				</div>
-				
+				</div>				
 				
 				<div class="form-group">
-					<label for="begin">Start</label>
-					<input id="start-input" type="text" name="begin" class="form-control" value="" disabled>	
+					<label for="begin-display">Start</label>
+					<input id="start-display" type="text" name="begin-display" class="form-control" value="" readOnly>
 				</div>
 				<div class="form-group">
-					<label for="end">Ende</label>
-					<input id="end-input" type="text" name="end" class="form-control" value="" disabled>
+					<label for="end-display">Ende</label>
+					<input id="end-display" type="text" name="end-display" class="form-control" value="" readOnly>
+				</div>
+				
+				<div class="form-group" style="display: none">
+					<input id="start-input" type="text" name="begin" class="form-control" value="" readOnly>
+					<input id="end-input" type="text" name="end" class="form-control" value="" readOnly>
 				</div>
 				
 				<div class="form-group row" style="margin-top: 10px; text-align: center">
 					<div class="col-3">
 						<input id="start-button" onclick="start();" class="btn btn-primary" type="button" value="Start" disabled>
 					</div>
-					<div class="col-6">
-						<p id="duration" style="font-size: 24px">00:00:00</p>
+					<div id="duration" class="col-6">
+						00:00:00
 					</div>
 					<div class="col-3">
 						<input id="stop-button" onclick="stop();" class="btn btn-primary" type="button" value="Stop" disabled>
@@ -131,7 +159,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				<hr />
 				
 				<div class="form-group" style="margin-top: 10px;" align="center">
-                    <input class="btn btn-primary" type="submit" value="Speichern">
+                    <input id="save-button" class="btn btn-primary" type="submit" value="Speichern">
                     <a href="overview.php" class="btn btn-default">Abbrechen</a>
                 </div>
 			</form> 
