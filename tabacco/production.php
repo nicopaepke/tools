@@ -24,7 +24,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			header("location: overview.php");
 			exit();
 		} else{
-			echo 'Something went wrong. Please try again later.';
+			echo 'Something went wrong. Please try again later.' . mysqli_error($link);
 		}
 		mysqli_stmt_close($stmt);
 	}
@@ -42,8 +42,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 	var interval;
 	function start() {
 		const now = new Date(Date.now());
-		document.getElementById('start-input').value = now.toISOString();
-		document.getElementById('start-display').value = formatDateTime(now);
+		document.getElementById('start-input').value = formatDateTimeForDB(now);
+		document.getElementById('start-display').value = formatDateTimeForView(now);
 		document.getElementById('start-button').disabled = true;
 		document.getElementById('quantity-input').readOnly = true;
 		document.getElementById('stop-button').disabled = false;
@@ -81,11 +81,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 			document.getElementById('duration').innerHTML = hours + ":" + minutes + ":" + seconds;
 		}, 500);
 	}
-	function formatDateTime( value){
-		const offset = value.getTimezoneOffset(); // Offset in Minuten
-		const localTime = new Date(value.getTime() - offset * 60000); // Offset berücksichtigen
+	function formatDateTimeForView( value){
+		const localTime = new Date(value.getTime());
 		const day = String(localTime.getDate()).padStart(2, '0');
-		const month = String(localTime.getMonth() + 1).padStart(2, '0'); // Monate starten bei 0
+		const month = String(localTime.getMonth() + 1).padStart(2, '0');
 		const year = localTime.getFullYear();
 		const hours = String(localTime.getHours()).padStart(2, '0');
 		const minutes = String(localTime.getMinutes()).padStart(2, '0');
@@ -93,10 +92,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 		return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 	}
+	function formatDateTimeForDB( value){
+		const localTime = new Date(value.getTime());
+		const day = String(localTime.getDate()).padStart(2, '0');
+		const month = String(localTime.getMonth() + 1).padStart(2, '0');
+		const year = localTime.getFullYear();
+		const hours = String(localTime.getHours()).padStart(2, '0');
+		const minutes = String(localTime.getMinutes()).padStart(2, '0');
+		const seconds = String(localTime.getSeconds()).padStart(2, '0');
+
+		return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+	}
 	function stop() {
 		const now = new Date(Date.now());
-		document.getElementById('end-input').value = now.toISOString();
-		document.getElementById('end-display').value = formatDateTime(now);
+		document.getElementById('end-input').value = formatDateTimeForDB(now);
+		document.getElementById('end-display').value = formatDateTimeForView(now);
 		document.getElementById('stop-button').disabled = true;
 		document.getElementById('save-button').disabled = false;
 		clearInterval(interval);

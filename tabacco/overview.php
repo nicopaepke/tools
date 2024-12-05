@@ -136,7 +136,7 @@
 		
 		echo '<div style="display: none" id="production-' . $box['id'] . '" class="row"><div class="col-12">';
 		echo '<table class="table table-striped production-table"><thead><tr>';
-		echo '<th style="text-align: left;">Zeitraum</th><th>Dauer</th><th>Anzahl</th><th>&#8960</th></tr></thead><tbody>';
+		echo '<th style="text-align: left; width: 50%;">Zeitraum</th><th>Dauer</th><th>Anzahl</th><th>&#8960</th></tr></thead><tbody>';
 
 		foreach($productions[$box['id']] as $production){
 			echo "<tr>";
