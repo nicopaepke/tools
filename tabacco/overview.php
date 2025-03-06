@@ -94,35 +94,35 @@
 	foreach($boxes as $box){
 		echo '<div class="tabacco-box"><div class="row">';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Hersteller:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Hersteller:</p>';
 		echo '</div><div class="col-6"><p>' . $box['brand'] . '</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Preis:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Preis:</p>';
 		echo '</div><div class="col-6"><p>' . $box['price'] . ' €</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Inhalt:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Inhalt:</p>';
 		echo '</div><div class="col-6"><p>' . $box['contents'] . ' g</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Bis zu:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Bis zu:</p>';
 		echo '</div><div class="col-6"><p>' . $box['expected_cigarettes'] . ' Zig.</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Begonnen:</b></p>';
-		echo '</div><div class="col-6"><p>' . date_format(date_create($box['started_at']), 'd.m.Y') . '</p></div></div></div>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Begonnen:</p>';
+		echo '</div><div class="col-6"><p>' . date_format(date_create($box['started_at']), 'd.m.y') . '</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Beendet:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Beendet:</p>';
 		if( $box['finished_at'] != null){
-			echo '</div><div class="col-6"><p>' . date_format(date_create($box['finished_at']), 'd.m.Y') . '</p></div></div></div>';
+			echo '</div><div class="col-6"><p>' . date_format(date_create($box['finished_at']), 'd.m.y') . '</p></div></div></div>';
 		} else {
 			echo '</div><div class="col-6"><p>-</p></div></div></div>';
 		}		
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Produziert:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Produziert:</p>';
 		echo '</div><div class="col-6"><p>' . $box['produced'] . '</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Ausbeute:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Ausbeute:</p>';
 		echo '</div><div class="col-6"><p>' . $box['percentage'] . ' %</p></div></div></div>';
 		
-		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p><b>Zig. Preis:</b></p>';
+		echo '<div class="col-md-4 col-6"><div class="row"><div class="col-6"><p>Zig. Preis:</p>';
 		echo '</div><div class="col-6"><p>' . $box['cig_price'] . ' Cent</p></div></div></div>';
 		
 		

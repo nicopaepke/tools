@@ -44,8 +44,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		const now = new Date(Date.now());
 		document.getElementById('start-input').value = formatDateTimeForDB(now);
 		document.getElementById('start-display').value = formatDateTimeForView(now);
-		document.getElementById('start-button').disabled = true;
-		document.getElementById('quantity-input').readOnly = true;
+		//document.getElementById('start-button').disabled = true;
+		//document.getElementById('quantity-input').readOnly = true;
 		document.getElementById('stop-button').disabled = false;
 		
 		interval = setInterval(function() {
@@ -111,9 +111,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		document.getElementById('save-button').disabled = false;
 		clearInterval(interval);
 	}
-	function onChangeQuantity(){
-		document.getElementById('start-button').disabled = !(document.getElementById('quantity-input').value > 0);
-	}
+	//function onChangeQuantity(){
+	//document.getElementById('start-button').disabled = !(document.getElementById('quantity-input').value > 0);
+	//}
 	</script>
   
 </head> 
@@ -156,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				
 				<div class="form-group row" style="margin-top: 10px; text-align: center">
 					<div class="col-3">
-						<input id="start-button" onclick="start();" class="btn btn-primary" type="button" value="Start" disabled>
+						<input id="start-button" onclick="start();" class="btn btn-primary" type="button" value="Start">
 					</div>
 					<div id="duration" class="col-6">
 						00:00:00
@@ -169,7 +169,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				<hr />
 				
 				<div class="form-group" style="margin-top: 10px;" align="center">
-                    <input id="save-button" class="btn btn-primary" type="submit" value="Speichern">
+                    <input id="save-button" class="btn btn-primary" type="submit" value="Speichern" disabled>
                     <a href="overview.php" class="btn btn-default">Abbrechen</a>
                 </div>
 			</form> 
