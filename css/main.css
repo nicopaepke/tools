@@ -201,6 +201,21 @@ span.permission.denied {
 	margin: 8px 0;
 }
 
+.tabacco-box .label {
+	color: #999;
+	font-size: small;
+	margin-top: 3px;
+}
+
+.tabacco-box .value {
+	text-align: right;
+}
+
+.tabacco-box .preview {
+	font-style: italic;
+}
+
+
 .tabacco-box .button-list {
 	margin-bottom: 4px;
 }

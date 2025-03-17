@@ -44,7 +44,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 		const now = new Date(Date.now());
 		document.getElementById('start-input').value = formatDateTimeForDB(now);
 		document.getElementById('start-display').value = formatDateTimeForView(now);
-		//document.getElementById('start-button').disabled = true;
+		document.getElementById('start-button').disabled = true;
 		//document.getElementById('quantity-input').readOnly = true;
 		document.getElementById('stop-button').disabled = false;
 		
