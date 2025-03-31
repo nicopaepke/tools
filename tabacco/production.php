@@ -170,7 +170,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 				
 				<div class="form-group" style="margin-top: 10px;" align="center">
                     <input id="save-button" class="btn btn-primary" type="submit" value="Speichern" disabled>
-                    <a href="overview.php" class="btn btn-default">Abbrechen</a>
+                    <a href="overview.php" class="btn btn-default" onclick="return confirm('Produktion wirklich abbrechen?')">Abbrechen</a>
                 </div>
 			</form> 
 		</div>

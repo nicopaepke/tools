@@ -44,14 +44,18 @@
 			while($box = mysqli_fetch_array($res)) {
 				$box['percentage'] = 0;
 				$box['cig_price'] = '-';
+				$box['cig_weight'] = '-';
 				if( $box['expected_cigarettes'] != 0){
 					$box['percentage'] = round($box['produced'] / $box['expected_cigarettes'] * 100, 2);
-					$box['expected_price_per_cigarette'] = round($box['price'] / $box['expected_cigarettes'] * 100, 1);
-					$box['expected_weight_per_cigatette'] = round($box['contents'] / $box['expected_cigarettes'] * 100, 1);					
+					$box['expected_price_per_cigarette'] = round($box['price'] / $box['expected_cigarettes'] * 100, 2);
+					$box['expected_weight_per_cigatette'] = round($box['contents'] / $box['expected_cigarettes'], 2);					
 				}
 				if( $box['produced'] != 0){
-					$box['cig_price'] = round($box['price'] / $box['produced'] * 100, 1);
-					$box['cig_weight'] = round($box['contents'] / $box['produced'] * 100, 1);					
+					$box['cig_price'] = round($box['price'] / $box['produced'] * 100, 2);
+					$box['cig_weight'] = round($box['contents'] / $box['produced'], 2);					
+				}
+				if( $box['produced'] == ''){
+					$box['produced'] = 0;
 				}
 				$box['productions'] = [];
 				$boxes[] = $box;
